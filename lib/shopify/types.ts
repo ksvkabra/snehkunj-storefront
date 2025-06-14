@@ -36,8 +36,9 @@ export type CartItem = {
   };
 };
 
-export type Collection = ShopifyCollection & {
+export type Collection = Omit<ShopifyCollection, 'products'> & {
   path: string;
+  products: Product[];
 };
 
 export type Image = {
@@ -108,11 +109,13 @@ export type ShopifyCart = {
 };
 
 export type ShopifyCollection = {
+  id: string;
   handle: string;
   title: string;
   description: string;
   seo: SEO;
   updatedAt: string;
+  products: Connection<ShopifyProduct>;
 };
 
 export type ShopifyProduct = {
@@ -270,3 +273,20 @@ export type ShopifyProductsOperation = {
     sortKey?: string;
   };
 };
+
+export interface ShopifyImage {
+  url: string;
+  altText?: string;
+  width: number;
+  height: number;
+}
+
+export interface ShopifyPrice {
+  amount: string;
+  currencyCode: string;
+}
+
+export interface ShopifyPriceRange {
+  minVariantPrice: ShopifyPrice;
+  maxVariantPrice: ShopifyPrice;
+}

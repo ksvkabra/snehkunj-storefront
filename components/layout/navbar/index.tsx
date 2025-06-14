@@ -26,7 +26,6 @@ export default function Navbar() {
         await debugAllDocuments();
         
         const categories = await getMenuCategories();
-        console.log('🚀 ~ fetchCategories ~ categories:', categories);
         
         if (Array.isArray(categories) && categories.length > 0) {
           setMenuCategories(categories);

@@ -5,7 +5,6 @@ import type { SanityMenuCategory } from '../types/menu-category';
 export async function debugAllDocuments() {
   try {
     const allDocs = await sanityClient.fetch(debugAllDocumentsQuery);
-    console.log('All documents in dataset:', allDocs);
     return allDocs;
   } catch (error) {
     console.error('Error fetching all documents:', error);
@@ -15,9 +14,7 @@ export async function debugAllDocuments() {
 
 export async function getMenuCategories(): Promise<SanityMenuCategory[]> {
   try {
-    console.log('Fetching menu categories with query:', menuCategoriesQuery);
     const categories = await sanityClient.fetch<SanityMenuCategory[]>(menuCategoriesQuery);
-    console.log('Raw categories response:', categories);
     
     if (!Array.isArray(categories)) {
       console.error('Expected array of categories but got:', categories);

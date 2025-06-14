@@ -1,5 +1,5 @@
 import { slugField } from './objects/slug';
-import { subcategorySchema } from './objects/subcategory';
+import { subSubcategorySchema } from './objects/sub-subcategory';
 
 export default {
   name: 'menuCategory',
@@ -17,7 +17,7 @@ export default {
       name: 'children',
       title: 'Subcategories',
       type: 'array',
-      of: [subcategorySchema],
+      of: [subSubcategorySchema],
       validation: (Rule: any) => Rule.required(),
     },
     {
@@ -39,4 +39,4 @@ export default {
       };
     },
   },
-}; 
+};

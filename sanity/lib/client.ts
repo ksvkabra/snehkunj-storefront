@@ -1,7 +1,6 @@
 import imageUrlBuilder from '@sanity/image-url';
 import { createClient } from 'next-sanity';
 import { apiVersion, dataset, projectId } from '../env';
-console.log('🚀 ~ apiVersion, dataset, projectId:', apiVersion, dataset, projectId);
 
 export const sanityClient = createClient({
   projectId,

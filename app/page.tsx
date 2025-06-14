@@ -1,6 +1,10 @@
 import { Carousel } from 'components/carousel';
+import FeaturedCollectionSection from 'components/featured-collection-section';
 import { ThreeItemGrid } from 'components/grid/three-items';
 import Footer from 'components/layout/footer';
+import Section from 'components/section';
+import { getCollectionProducts } from 'lib/shopify';
+import { getPage } from 'sanity/lib/services/page';
 
 export const metadata = {
   description:
@@ -10,9 +14,29 @@ export const metadata = {
   }
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [pageContent, featuredProducts] = await Promise.all([
+    getPage('home'),
+    getCollectionProducts({ collection: 'featured' })
+  ]);
+
   return (
     <>
+      {/* Render Sanity sections */}
+      {pageContent?.sections.map((section, index) => (
+        <Section key={`${section._type}-${index}`} section={section} />
+      ))}
+
+      {/* Featured Collection */}
+      {featuredProducts.length > 0 && (
+        <FeaturedCollectionSection
+          title="Featured Collection"
+          products={featuredProducts}
+          collectionHandle="featured"
+        />
+      )}
+
+      {/* Default components */}
       <ThreeItemGrid />
       <Carousel />
       <Footer />
