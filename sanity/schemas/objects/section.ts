@@ -15,7 +15,10 @@ export const sectionSchema = defineType({
           { title: 'About Section', value: 'aboutSection' },
           { title: 'Testimonials Section', value: 'testimonialsSection' },
           { title: 'Featured Categories Section', value: 'featuredCategoriesSection' },
-          // Add more section types here as needed
+          { title: 'Image Text Banner Section', value: 'imageTextBannerSection' },
+          { title: 'Newsletter Signup Section', value: 'newsletterSignupSection' },
+          { title: 'Trust Badges Section', value: 'trustBadgesSection' },
+          { title: 'CTA Banner Section', value: 'ctaBannerSection' },
         ],
       },
       validation: (Rule) => Rule.required(),
@@ -48,7 +51,34 @@ export const sectionSchema = defineType({
       to: [{ type: 'featuredCategoriesSection' }],
       hidden: ({ parent }) => parent?.type !== 'featuredCategoriesSection',
     }),
-    // Add more section references here as needed
+    defineField({
+      name: 'imageTextBannerSection',
+      title: 'Image Text Banner Section',
+      type: 'reference',
+      to: [{ type: 'imageTextBannerSection' }],
+      hidden: ({ parent }) => parent?.type !== 'imageTextBannerSection',
+    }),
+    defineField({
+      name: 'newsletterSignupSection',
+      title: 'Newsletter Signup Section',
+      type: 'reference',
+      to: [{ type: 'newsletterSignupSection' }],
+      hidden: ({ parent }) => parent?.type !== 'newsletterSignupSection',
+    }),
+    defineField({
+      name: 'trustBadgesSection',
+      title: 'Trust Badges Section',
+      type: 'reference',
+      to: [{ type: 'trustBadgesSection' }],
+      hidden: ({ parent }) => parent?.type !== 'trustBadgesSection',
+    }),
+    defineField({
+      name: 'ctaBannerSection',
+      title: 'CTA Banner Section',
+      type: 'reference',
+      to: [{ type: 'ctaBannerSection' }],
+      hidden: ({ parent }) => parent?.type !== 'ctaBannerSection',
+    }),
   ],
   preview: {
     select: {
@@ -57,13 +87,21 @@ export const sectionSchema = defineType({
       aboutTitle: 'aboutSection.heading',
       testimonialsTitle: 'testimonialsSection.title',
       categoriesTitle: 'featuredCategoriesSection.title',
+      bannerTitle: 'imageTextBannerSection.headline',
+      newsletterTitle: 'newsletterSignupSection.headline',
+      trustBadgesTitle: 'trustBadgesSection.title',
+      ctaTitle: 'ctaBannerSection.headline',
     },
-    prepare({ type, heroTitle, aboutTitle, testimonialsTitle, categoriesTitle }) {
+    prepare({ type, heroTitle, aboutTitle, testimonialsTitle, categoriesTitle, bannerTitle, newsletterTitle, trustBadgesTitle, ctaTitle }) {
       return {
         title: type === 'heroSection' ? heroTitle : 
                type === 'aboutSection' ? aboutTitle :
                type === 'testimonialsSection' ? testimonialsTitle :
-               type === 'featuredCategoriesSection' ? categoriesTitle : type,
+               type === 'featuredCategoriesSection' ? categoriesTitle :
+               type === 'imageTextBannerSection' ? bannerTitle :
+               type === 'newsletterSignupSection' ? newsletterTitle :
+               type === 'trustBadgesSection' ? trustBadgesTitle :
+               type === 'ctaBannerSection' ? ctaTitle : type,
         subtitle: `Section Type: ${type}`,
       };
     },

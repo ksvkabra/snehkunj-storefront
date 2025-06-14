@@ -1,8 +1,9 @@
-export default {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
   experimental: {
     ppr: true,
     inlineCss: true,
-    useCache: true
+    useCache: true,
   },
   images: {
     formats: ['image/avif', 'image/webp'],
@@ -10,8 +11,15 @@ export default {
       {
         protocol: 'https',
         hostname: 'cdn.shopify.com',
-        pathname: '/s/files/**'
-      }
-    ]
-  }
+        pathname: '/s/files/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.sanity.io',
+        pathname: '/images/**',
+      },
+    ],
+  },
 };
+
+module.exports = nextConfig;

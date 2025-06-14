@@ -48,8 +48,62 @@ export const pageQuery = groq`
           _type,
           title,
           slug,
-          image
+          image {
+            asset-> {
+              _id,
+              url
+            },
+            alt
+          }
         }
+      },
+      imageTextBannerSection-> {
+        _id,
+        _type,
+        headline,
+        text,
+        image {
+          asset-> {
+            _id,
+            url
+          },
+          alt
+        },
+        imagePosition,
+        ctaLabel,
+        ctaLink
+      },
+      newsletterSignupSection-> {
+        _id,
+        _type,
+        headline,
+        subtext,
+        ctaLabel
+      },
+      trustBadgesSection-> {
+        _id,
+        _type,
+        title,
+        badges[] {
+          _type,
+          label,
+          icon {
+            asset-> {
+              _id,
+              url
+            },
+            alt
+          }
+        }
+      },
+      ctaBannerSection-> {
+        _id,
+        _type,
+        headline,
+        subheadline,
+        ctaLabel,
+        ctaLink,
+        backgroundColor
       }
     },
     seo
