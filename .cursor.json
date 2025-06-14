@@ -1,0 +1,156 @@
+{
+  "$schema": "https://raw.githubusercontent.com/cursor-sh/cursor-config-schema/main/schema.json",
+  "project": {
+    "name": "next-commerce-shopify",
+    "description": "Faire-inspired wholesale storefront using Next.js Commerce and Shopify Storefront API",
+    "language": "typescript"
+  },
+  "reference": {
+    "source": "https://www.faire.com",
+    "notes": "This is a wholesale ecommerce site we're replicating. The layout, components, and UX should follow Faire's mobile-first design patterns for header, navigation, product listing, PDP, and cart."
+  },
+  "naming": {
+    "components": {
+      "pattern": "PascalCase",
+      "examples": {
+        "layout": "Header.tsx, Footer.tsx, Navigation.tsx",
+        "ui": "Button.tsx, Input.tsx, Card.tsx",
+        "product": "ProductCard.tsx, ProductGrid.tsx, ProductDetails.tsx",
+        "cart": "CartDrawer.tsx, CartItem.tsx, CartSummary.tsx"
+      }
+    },
+    "hooks": {
+      "pattern": "camelCase",
+      "prefix": "use",
+      "examples": "useCart.ts, useProduct.ts, useGeo.ts"
+    },
+    "utils": {
+      "pattern": "camelCase",
+      "examples": "formatPrice.ts, validateLocation.ts, shopifyClient.ts"
+    },
+    "context": {
+      "pattern": "camelCase",
+      "suffix": "Context",
+      "examples": "cartContext.tsx, shopContext.tsx, authContext.tsx"
+    },
+    "api": {
+      "pattern": "kebab-case",
+      "examples": "products/route.ts, cart/route.ts, categories/route.ts"
+    },
+    "constants": {
+      "pattern": "UPPER_SNAKE_CASE",
+      "examples": "SHOPIFY_CONFIG.ts, API_ENDPOINTS.ts, SEO_METADATA.ts"
+    },
+    "types": {
+      "pattern": "PascalCase",
+      "suffix": "Type",
+      "examples": "ProductType.ts, CartType.ts, UserType.ts"
+    },
+    "styles": {
+      "pattern": "kebab-case",
+      "suffix": ".module.css",
+      "examples": "product-card.module.css, cart-drawer.module.css"
+    }
+  },
+  "paths": {
+    "components": [
+      "components",
+      "components/layout",
+      "components/ui",
+      "components/product",
+      "components/cart",
+      "components/grid",
+      "components/icons",
+      "components/common"
+    ],
+    "pages": ["app"],
+    "api": ["app/api"],
+    "lib": ["lib", "utils", "hooks", "context", "services"],
+    "constants": ["constants"],
+    "styles": ["styles", "components/**/*.module.css"],
+    "config": ["next.config.ts", "postcss.config.mjs", "tsconfig.json"]
+  },
+  "tools": {
+    "tailwind": true,
+    "nextjs": true,
+    "typescript": true,
+    "shopify": true,
+    "postcss": true,
+    "pnpm": true
+  },
+  "context": {
+    "entrypoints": [
+      "app/page.tsx",
+      "app/layout.tsx",
+      "components/layout/Header.tsx",
+      "components/layout/Footer.tsx"
+    ],
+    "api": [
+      "app/api/categories/route.ts",
+      "app/api/products/route.ts",
+      "app/api/cart/route.ts"
+    ],
+    "state": [
+      "context/cart-context.tsx",
+      "context/shop-context.tsx"
+    ],
+    "config": [
+      "constants/shopify.ts",
+      "constants/urls.ts",
+      "constants/seo.ts",
+      "next.config.ts",
+      "postcss.config.mjs",
+      "tsconfig.json"
+    ],
+    "hooks": [
+      "hooks/use-cart.ts",
+      "hooks/use-product.ts",
+      "hooks/use-geo.ts"
+    ],
+    "utils": [
+      "utils/format-price.ts",
+      "utils/shopify-client.ts",
+      "utils/validate-location.ts"
+    ],
+    "services": [
+      "lib/shopify/queries.ts",
+      "lib/shopify/fetch.ts"
+    ],
+    "components": {
+      "ui": [
+        "components/carousel.tsx",
+        "components/loading-dots.tsx",
+        "components/price.tsx",
+        "components/label.tsx",
+        "components/prose.tsx"
+      ],
+      "layout": [
+        "components/layout/Header.tsx",
+        "components/layout/Footer.tsx"
+      ],
+      "product": [
+        "components/product/ProductCard.tsx",
+        "components/product/ProductGrid.tsx"
+      ],
+      "cart": [
+        "components/cart/CartDrawer.tsx",
+        "components/cart/CartItem.tsx"
+      ]
+    }
+  },
+  "prompts": {
+    "style": "Use clean, functional components with Tailwind CSS. Prefer mobile-first layouts and minimal spacing. Follow Faire-like UX for wholesale/bulk shopping. Use consistent spacing and typography from the design system.",
+    "language": "Use functional React components with TypeScript. Split logic into hooks, constants, and utils. Reuse components where possible. All new files must be typed. Follow Next.js 13+ app directory conventions.",
+    "commands": {
+      "newComponent": "Generate a reusable component inside `components/{section}`. Use Tailwind, TypeScript props, and default mobile-first styles. Include proper JSDoc documentation and prop types.",
+      "newHook": "Create a hook in `hooks/` folder. Name it `useXyz`. Ensure all types and return values are clearly documented. Include error handling and loading states.",
+      "newUtil": "Create a utility function in `utils/` for formatting, parsing, or Shopify data mapping. Include TypeScript types and unit tests if applicable.",
+      "newAPI": "Create an API route in `app/api/{resource}/route.ts`. Use POST if fetching from Shopify, include GraphQL query from `lib/shopify/queries.ts`. Add proper error handling and response types.",
+      "updateComponent": "Refactor the component to improve modularity, move any inline logic to hooks or utils if used in multiple places. Ensure proper TypeScript types and documentation.",
+      "extractConstants": "Move static values (URLs, routes, countries, currencies) into the `constants/` folder and import them properly. Use TypeScript enums or const objects for type safety.",
+      "newLayout": "Create a new layout component in `components/layout/`. Ensure it's responsive and follows the project's design system.",
+      "newIcon": "Add a new icon component in `components/icons/`. Use SVG format and ensure it's properly typed and sized.",
+      "newGrid": "Create a new grid component in `components/grid/`. Ensure it's responsive and follows the project's grid system."
+    }
+  }
+} 
