@@ -1,6 +1,6 @@
-import type { SanityMenuCategory } from '../../../lib/types/sanity-menu-category';
 import { sanityClient } from '../client';
 import { debugAllDocumentsQuery, menuCategoriesQuery } from '../queries/menu-category';
+import type { SanityMenuCategory } from '../types/menu-category';
 
 export async function debugAllDocuments() {
   try {
@@ -20,7 +20,7 @@ export async function getMenuCategories(): Promise<SanityMenuCategory[]> {
     console.log('Raw categories response:', categories);
     
     if (!Array.isArray(categories)) {
-      console.error('Expected array of categories but got:', typeof categories);
+      console.error('Expected array of categories but got:', categories);
       return [];
     }
     
