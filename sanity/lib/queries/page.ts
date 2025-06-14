@@ -26,6 +26,30 @@ export const pageQuery = groq`
         ctaLabel,
         ctaLink,
         image
+      },
+      testimonialsSection-> {
+        _id,
+        _type,
+        title,
+        testimonials[] {
+          _type,
+          name,
+          quote,
+          avatar,
+          title,
+          rating
+        }
+      },
+      featuredCategoriesSection-> {
+        _id,
+        _type,
+        title,
+        categories[] {
+          _type,
+          title,
+          slug,
+          image
+        }
       }
     },
     seo

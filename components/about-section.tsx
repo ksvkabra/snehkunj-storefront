@@ -7,7 +7,6 @@ interface AboutSectionProps {
 }
 
 export default function AboutSection({ data }: AboutSectionProps) {
-  console.log('🚀 ~ AboutSection ~ data:', data);
   const imageUrl = urlFor(data.image).url();
 
   return (
