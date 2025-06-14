@@ -85,6 +85,28 @@
       "components/layout/Header.tsx",
       "components/layout/Footer.tsx"
     ],
+    "app": {
+      "root": [
+        "app/page.tsx",
+        "app/layout.tsx",
+        "app/error.tsx",
+        "app/globals.css",
+        "app/robots.ts",
+        "app/sitemap.ts",
+        "app/opengraph-image.tsx"
+      ],
+      "routes": [
+        "app/[page]/page.tsx",
+        "app/product/[handle]/page.tsx",
+        "app/search/page.tsx",
+        "app/cms/page.tsx"
+      ],
+      "api": [
+        "app/api/categories/route.ts",
+        "app/api/products/route.ts",
+        "app/api/cart/route.ts"
+      ]
+    },
     "api": [
       "app/api/categories/route.ts",
       "app/api/products/route.ts",

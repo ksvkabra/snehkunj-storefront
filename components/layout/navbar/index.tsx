@@ -1,9 +1,10 @@
 'use client';
-import { menuCategories } from 'lib/constants/menu';
+import type { SanityMenuCategory } from 'lib/types/sanity-menu-category';
 import { ChevronDown, Globe, Heart, Menu, Search, ShoppingCart, User, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Suspense, useCallback, useState } from 'react';
+import { Suspense, useCallback, useEffect, useState } from 'react';
+import { debugAllDocuments, getMenuCategories } from 'sanity/lib/services/menu-category';
 import DesktopCategoryNav from './desktop-category-nav';
 import MobileMenu from './mobile-menu';
 
@@ -11,9 +12,36 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [menuCategories, setMenuCategories] = useState<SanityMenuCategory[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
   // Stub: replace with real auth logic
   const isLoggedIn = false;
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setIsLoading(true);
+        // Debug: Check all documents first
+        await debugAllDocuments();
+        
+        const categories = await getMenuCategories();
+        console.log('🚀 ~ fetchCategories ~ categories:', categories);
+        
+        if (Array.isArray(categories) && categories.length > 0) {
+          setMenuCategories(categories);
+        } else {
+          console.warn('No categories found or invalid response format');
+        }
+      } catch (error) {
+        console.error('Failed to fetch menu categories:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   // Keyboard shortcut: ESC closes menu or search
   const handleKeyDown = useCallback(
@@ -139,10 +167,14 @@ export default function Navbar() {
         </div>
       </div>
 
-      <DesktopCategoryNav categories={menuCategories} />
-      <Suspense fallback={null}>
-        <MobileMenu open={menuOpen} setOpen={setMenuOpen} menu={menuCategories} />
-      </Suspense>
+      {!isLoading && menuCategories.length > 0 && (
+        <>
+          <DesktopCategoryNav categories={menuCategories} />
+          <Suspense fallback={null}>
+            <MobileMenu open={menuOpen} setOpen={setMenuOpen} menu={menuCategories} />
+          </Suspense>
+        </>
+      )}
     </nav>
   );
 }
