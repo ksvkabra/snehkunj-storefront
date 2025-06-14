@@ -19,7 +19,7 @@
   }
 }
 
-@supports (font: -apple-system-b  ody) and (-webkit-appearance: none) {
+@supports (font: -apple-system-b ody) and (-webkit-appearance: none) {
   img[loading='lazy'] {
     clip-path: inset(0.6px);
   }
@@ -30,3 +30,52 @@ input,
 button {
   @apply focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-neutral-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-50 dark:focus-visible:ring-neutral-600 dark:focus-visible:ring-offset-neutral-900;
 }
+
+/* Define Holicraft color palette using CSS variables */
+:root {
+  --holicraft-terracotta: #b25a3c;
+  --holicraft-mustard: #d39e42;
+  --holicraft-blush: #e2b6a0;
+  --holicraft-cream: #f9f6f1;
+  --holicraft-beige: #efe5dc;
+  --holicraft-white: #fffdfb;
+  --holicraft-brown: #4a2c1a;
+  --holicraft-charcoal: #5b4b3a;
+  --holicraft-clay: #c2a899;
+  --holicraft-hover: #934830;
+}
+
+/* Text color utilities */
+.text-holicraft-terracotta {
+  color: var(--holicraft-terracotta);
+}
+.text-holicraft-mustard {
+  color: var(--holicraft-mustard);
+}
+.text-holicraft-cream {
+  color: var(--holicraft-cream);
+}
+.text-holicraft-brown {
+  color: var(--holicraft-brown);
+}
+
+/* Background color utilities */
+.bg-holicraft-terracotta {
+  background-color: var(--holicraft-terracotta);
+}
+.bg-holicraft-mustard {
+  background-color: var(--holicraft-mustard);
+}
+.bg-holicraft-cream {
+  background-color: var(--holicraft-cream);
+}
+.bg-holicraft-hover {
+  background-color: var(--holicraft-hover);
+}
+
+/* Hover versions */
+.hover\:bg-holicraft-hover:hover {
+  background-color: var(--holicraft-hover);
+}
+
+/* Add others as needed, following the same pattern */
