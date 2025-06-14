@@ -1,69 +1,77 @@
+'use client';
+
+import { Instagram } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { getFooter } from 'sanity/lib/services/footer';
+import type { SanityFooter } from 'sanity/lib/types/footer';
 
-import FooterMenu from 'components/layout/footer-menu';
-import LogoSquare from 'components/logo-square';
-import { getMenu } from 'lib/shopify';
-import { Suspense } from 'react';
+const socialIcons = {
+  instagram: Instagram,
+};
 
-const { COMPANY_NAME, SITE_NAME } = process.env;
+export default function Footer() {
+  const [footer, setFooter] = useState<SanityFooter | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-export default async function Footer() {
-  const currentYear = new Date().getFullYear();
-  const copyrightDate = 2023 + (currentYear > 2023 ? `-${currentYear}` : '');
-  const skeleton = 'w-full h-6 animate-pulse rounded-sm bg-neutral-200 dark:bg-neutral-700';
-  const menu = await getMenu('next-js-frontend-footer-menu');
-  const copyrightName = COMPANY_NAME || SITE_NAME || '';
+  useEffect(() => {
+    async function loadFooter() {
+      try {
+        const data = await getFooter();
+        setFooter(data);
+      } catch (error) {
+        console.error('Error loading footer:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadFooter();
+  }, []);
+
+  if (isLoading || !footer) {
+    return null;
+  }
 
   return (
-    <footer className="text-sm text-neutral-500 dark:text-neutral-400">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 border-t border-neutral-200 px-6 py-12 text-sm md:flex-row md:gap-12 md:px-4 min-[1320px]:px-0 dark:border-neutral-700">
-        <div>
-          <Link className="flex items-center gap-2 text-black md:pt-1 dark:text-white" href="/">
-            <LogoSquare size="sm" />
-            <span className="uppercase">{SITE_NAME}</span>
-          </Link>
-        </div>
-        <Suspense
-          fallback={
-            <div className="flex h-[188px] w-[200px] flex-col gap-2">
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
-              <div className={skeleton} />
+    <footer className='bg-holicraft-cream text-gray-700'>
+      <div className='mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8'>
+        {/* Navigation Grid */}
+        <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3'>
+          {footer?.navigation?.map((section) => (
+            <div key={section.title}>
+              <h3 className='text-sm font-bold uppercase tracking-wider'>{section.title}</h3>
+              <ul className='mt-4 space-y-2'>
+                {section.links.map((link) => (
+                  <li key={link.label}>
+                    <Link href={link.href} className='text-sm hover:underline'>
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-          }
-        >
-          <FooterMenu menu={menu} />
-        </Suspense>
-        <div className="md:ml-auto">
-          <a
-            className="flex h-8 w-max flex-none items-center justify-center rounded-md border border-neutral-200 bg-white text-xs text-black dark:border-neutral-700 dark:bg-black dark:text-white"
-            aria-label="Deploy on Vercel"
-            href="https://vercel.com/templates/next.js/nextjs-commerce"
-          >
-            <span className="px-3">▲</span>
-            <hr className="h-full border-r border-neutral-200 dark:border-neutral-700" />
-            <span className="px-3">Deploy</span>
-          </a>
+          ))}
         </div>
-      </div>
-      <div className="border-t border-neutral-200 py-6 text-sm dark:border-neutral-700">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-1 px-4 md:flex-row md:gap-0 md:px-4 min-[1320px]:px-0">
-          <p>
-            &copy; {copyrightDate} {copyrightName}
-            {copyrightName.length && !copyrightName.endsWith('.') ? '.' : ''} All rights reserved.
-          </p>
-          <hr className="mx-4 hidden h-4 w-[1px] border-l border-neutral-400 md:inline-block" />
-          <p>
-            <a href="https://github.com/vercel/commerce">View the source</a>
-          </p>
-          <p className="md:ml-auto">
-            <a href="https://vercel.com" className="text-black dark:text-white">
-              Created by ▲ Vercel
-            </a>
-          </p>
+
+        {/* Social Links */}
+        <div className='mt-12 flex justify-center space-x-6'>
+          {footer.social?.map((item) => {
+            const Icon = socialIcons[item.name.toLowerCase() as keyof typeof socialIcons];
+            if (!Icon) return null;
+
+            return (
+              <a key={item.name} href={item.url} target='_blank' rel='noopener noreferrer' className='text-gray-700 hover:text-gray-900'>
+                <span className='sr-only'>{item.name}</span>
+                <Icon className='h-6 w-6' />
+              </a>
+            );
+          })}
+        </div>
+
+        {/* Copyright */}
+        <div className='mt-8 border-t border-gray-200 pt-8 text-center text-sm'>
+          <p>{footer.bottomText}</p>
         </div>
       </div>
     </footer>
