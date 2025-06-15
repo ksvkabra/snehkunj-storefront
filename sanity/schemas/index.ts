@@ -11,6 +11,7 @@ import ctaBannerSection from './sections/cta-banner-section';
 import featuredCategoriesSection from './sections/featured-categories-section';
 import imageTextBannerSection from './sections/image-text-banner-section';
 import newsletterSignUpSection from './sections/newsletter-signup-section';
+import shopifySection from './sections/shopify-section';
 import testimonialsSection from './sections/testimonials-section';
 import trustBadgesSection from './sections/trust-badges-section';
 
@@ -30,4 +31,5 @@ export const schemaTypes = [
   newsletterSignUpSection,
   trustBadgesSection,
   ctaBannerSection,
+  shopifySection,
 ];

@@ -19,6 +19,7 @@ export const sectionSchema = defineType({
           { title: 'Newsletter Signup Section', value: 'newsletterSignupSection' },
           { title: 'Trust Badges Section', value: 'trustBadgesSection' },
           { title: 'CTA Banner Section', value: 'ctaBannerSection' },
+          { title: 'Shopify Section', value: 'shopifySection' },
         ],
       },
       validation: (Rule) => Rule.required(),
@@ -79,6 +80,13 @@ export const sectionSchema = defineType({
       to: [{ type: 'ctaBannerSection' }],
       hidden: ({ parent }) => parent?.type !== 'ctaBannerSection',
     }),
+    defineField({
+      name: 'shopifySection',
+      title: 'Shopify Section',
+      type: 'reference',
+      to: [{ type: 'shopifySection' }],
+      hidden: ({ parent }) => parent?.type !== 'shopifySection',
+    }),
   ],
   preview: {
     select: {
@@ -91,8 +99,9 @@ export const sectionSchema = defineType({
       newsletterTitle: 'newsletterSignupSection.headline',
       trustBadgesTitle: 'trustBadgesSection.title',
       ctaTitle: 'ctaBannerSection.headline',
+      shopifyTitle: 'shopifySection.sectionName',
     },
-    prepare({ type, heroTitle, aboutTitle, testimonialsTitle, categoriesTitle, bannerTitle, newsletterTitle, trustBadgesTitle, ctaTitle }) {
+    prepare({ type, heroTitle, aboutTitle, testimonialsTitle, categoriesTitle, bannerTitle, newsletterTitle, trustBadgesTitle, ctaTitle, shopifyTitle }) {
       return {
         title: type === 'heroSection' ? heroTitle : 
                type === 'aboutSection' ? aboutTitle :
@@ -101,7 +110,8 @@ export const sectionSchema = defineType({
                type === 'imageTextBannerSection' ? bannerTitle :
                type === 'newsletterSignupSection' ? newsletterTitle :
                type === 'trustBadgesSection' ? trustBadgesTitle :
-               type === 'ctaBannerSection' ? ctaTitle : type,
+               type === 'ctaBannerSection' ? ctaTitle :
+               type === 'shopifySection' ? `Shopify: ${shopifyTitle}` : type,
         subtitle: `Section Type: ${type}`,
       };
     },

@@ -4,12 +4,13 @@ import type { SanityFeaturedCategoriesSection } from './featured-categories-sect
 import type { SanityHeroSection } from './hero-section';
 import type { SanityImageTextBannerSection } from './image-text-banner-section';
 import type { SanityNewsletterSignupSection } from './newsletter-signup-section';
+import type { SanityShopifySection } from './shopify-section';
 import type { SanityTestimonialsSection } from './testimonials-section';
 import type { SanityTrustBadgesSection } from './trust-badges-section';
 
 export type SanitySection = {
   _type: 'section';
-  type: 'heroSection' | 'aboutSection' | 'testimonialsSection' | 'featuredCategoriesSection' | 'imageTextBannerSection' | 'newsletterSignupSection' | 'trustBadgesSection' | 'ctaBannerSection';
+  type: 'heroSection' | 'aboutSection' | 'testimonialsSection' | 'featuredCategoriesSection' | 'imageTextBannerSection' | 'newsletterSignupSection' | 'trustBadgesSection' | 'ctaBannerSection' | 'shopifySection';
   heroSection?: SanityHeroSection;
   aboutSection?: SanityAboutSection;
   testimonialsSection?: SanityTestimonialsSection;
@@ -18,6 +19,7 @@ export type SanitySection = {
   newsletterSignupSection?: SanityNewsletterSignupSection;
   trustBadgesSection?: SanityTrustBadgesSection;
   ctaBannerSection?: SanityCTABannerSection;
+  shopifySection?: SanityShopifySection;
 };
 
 export interface SanityPage {

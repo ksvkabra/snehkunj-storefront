@@ -7,6 +7,7 @@ import CTABannerSection from './sections/cta-banner-section';
 import FeaturedCategoriesSection from './sections/featured-categories-section';
 import ImageTextBannerSection from './sections/image-text-banner-section';
 import NewsletterSignupSection from './sections/newsletter-signup-section';
+import ShopifySection from './sections/shopify-section';
 import TestimonialsSection from './sections/testimonials-section';
 import TrustBadgesSection from './sections/trust-badges-section';
 
@@ -34,6 +35,8 @@ export default function Section({ section }: SectionProps) {
       return section.trustBadgesSection ? <TrustBadgesSection data={section.trustBadgesSection} /> : null;
     case 'ctaBannerSection':
       return section.ctaBannerSection ? <CTABannerSection data={section.ctaBannerSection} /> : null;
+    case 'shopifySection':
+      return section.shopifySection ? <ShopifySection data={section.shopifySection} /> : null;
     default:
       console.warn(`Unknown section type: ${section.type}`);
       return null;

@@ -10,10 +10,11 @@ export interface SanityCategory {
   image: SanityImageObject & {
     alt?: string;
   };
+  description?: string;
 }
 
 export interface SanityFeaturedCategoriesSection {
   _type: 'featuredCategoriesSection';
   title: string;
   categories: SanityCategory[];
-} 
+}

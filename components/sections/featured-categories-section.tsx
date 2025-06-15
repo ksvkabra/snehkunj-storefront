@@ -1,6 +1,8 @@
 'use client';
 
+import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
+import { useRef } from 'react';
 import { urlFor } from 'sanity/lib/image';
 import type { SanityFeaturedCategoriesSection } from 'sanity/lib/types/featured-categories-section';
 
@@ -9,21 +11,43 @@ interface FeaturedCategoriesSectionProps {
 }
 
 export default function FeaturedCategoriesSection({ data }: FeaturedCategoriesSectionProps) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.3 });
+
   if (!data.categories?.length) return null;
 
   return (
-    <section className='w-full py-16 bg-holicraft-cream md:py-24' aria-labelledby='categories-heading'>
-      <div className='px-4 mx-auto max-w-7xl sm:px-6 lg:px-8'>
-        <h2 id='categories-heading' className='mb-12 text-3xl font-bold tracking-tight text-center text-holicraft-brown sm:text-4xl'>
-          {data.title}
-        </h2>
+    <section className='w-full py-16 bg-holicraft-cream md:py-24' aria-labelledby='categories-heading' ref={ref}>
+      <motion.div
+        initial={{ opacity: 0, y: 60 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.8, ease: 'easeOut' }}
+        className='px-4 mx-auto max-w-7xl sm:px-6 lg:px-8'
+      >
+        {/* Header */}
+        <div className='flex items-center justify-between mb-12'>
+          <h2 id='categories-heading' className='text-3xl font-bold tracking-tight text-holicraft-brown sm:text-4xl'>
+            {data.title}
+          </h2>
+          <Link href='/collections' className='text-sm font-semibold text-holicraft-brown underline-offset-4 hover:underline'>
+            Shop all
+          </Link>
+        </div>
 
-        <div className='grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
+        {/* Category Cards */}
+        <div className='grid gap-4 md:grid-cols-3'>
           {data.categories.map((category, index) => (
-            <CategoryCard key={index} category={category} />
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 40 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ delay: 0.2 + index * 0.2, duration: 0.6, ease: 'easeOut' }}
+            >
+              <CategoryCard category={category} />
+            </motion.div>
           ))}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
@@ -32,16 +56,21 @@ function CategoryCard({ category }: { category: SanityFeaturedCategoriesSection[
   const imageUrl = urlFor(category.image).url();
 
   return (
-    <Link
-      href={`/category/${category.slug.current}`}
-      className='relative w-full h-64 overflow-hidden transition-transform duration-300 shadow-md rounded-xl group hover:scale-105 hover:shadow-lg'
-    >
-      <img src={imageUrl} alt={category.image.alt || category.title} className='object-cover w-full h-full' />
-      {/* Gradient overlay */}
-      <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent' />
-      {/* Category title */}
-      <div className='absolute bottom-0 left-0 right-0 p-4'>
-        <h3 className='text-lg font-semibold text-white drop-shadow'>{category.title}</h3>
+    <Link href={`/category/${category.slug.current}`} className='block group'>
+      <div className='relative overflow-hidden h-[650px] w-full rounded-2xl shadow-md transition-transform duration-300 group-hover:scale-[1.02] hover:shadow-lg'>
+        <div className='absolute inset-0 z-0 transition-transform duration-300 group-hover:scale-105'>
+          <img src={imageUrl} alt={category.image.alt || category.title} className='object-cover w-full h-full' />
+          <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent' />
+        </div>
+
+        {/* Text Content */}
+        <div className='absolute bottom-0 left-0 right-0 z-10 p-6 text-white'>
+          <h3 className='mb-1 text-2xl font-semibold drop-shadow'>{category.title}</h3>
+          {category.description && <p className='mb-3 text-sm text-white/80 drop-shadow'>{category.description}</p>}
+          <span className='inline-block px-4 py-2 text-sm font-medium text-white transition rounded-full bg-white/10 backdrop-blur-sm hover:bg-white/20'>
+            Shop now
+          </span>
+        </div>
       </div>
     </Link>
   );

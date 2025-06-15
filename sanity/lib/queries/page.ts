@@ -104,6 +104,12 @@ export const pageQuery = groq`
         ctaLabel,
         ctaLink,
         backgroundColor
+      },
+      shopifySection-> {
+        _id,
+        _type,
+        sectionName,
+        sectionId
       }
     },
     seo

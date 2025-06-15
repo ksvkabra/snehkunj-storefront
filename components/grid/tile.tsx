@@ -20,29 +20,30 @@ export function GridTileImage({
   return (
     <div
       className={clsx(
-        'group flex h-full w-full items-center justify-center overflow-hidden rounded-lg border bg-white hover:border-blue-600 dark:bg-black',
+        'group relative aspect-[4/5] w-full overflow-hidden rounded-xl bg-white shadow-sm transition-shadow hover:shadow-md',
         {
-          relative: label,
-          'border-2 border-blue-600': active,
-          'border-neutral-200 dark:border-neutral-800': !active
+          'ring-2 ring-holicraft-mustard': active,
         }
       )}
     >
-      {props.src ? (
+      {props.src && (
         <Image
-          className={clsx('relative h-full w-full object-contain', {
-            'transition duration-300 ease-in-out group-hover:scale-105': isInteractive
+          className={clsx('h-full w-full object-cover transition-transform duration-300 ease-in-out', {
+            'group-hover:scale-105': isInteractive,
           })}
           {...props}
         />
-      ) : null}
+      )}
+
       {label ? (
-        <Label
-          title={label.title}
-          amount={label.amount}
-          currencyCode={label.currencyCode}
-          position={label.position}
-        />
+        <div
+          className={clsx('absolute bottom-0 w-full px-4 py-3 backdrop-blur-sm transition', {
+            'bg-white/90': !active,
+            'bg-holicraft-mustard/90 text-holicraft-brown': active,
+          })}
+        >
+          <Label title={label.title} amount={label.amount} currencyCode={label.currencyCode} position={label.position} />
+        </div>
       ) : null}
     </div>
   );
