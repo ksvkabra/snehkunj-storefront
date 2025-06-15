@@ -21,7 +21,7 @@ export default function TestimonialsSection({ data }: TestimonialsSectionProps) 
 
         {/* Mobile: Horizontal Scroll */}
         <div className='md:hidden'>
-          <div className='flex gap-4 pb-4 overflow-x-auto'>
+          <div className='flex gap-4 px-4 pb-4 -mx-4 overflow-x-auto'>
             {data.testimonials.map((testimonial, index) => (
               <TestimonialCard key={index} testimonial={testimonial} />
             ))}
@@ -43,7 +43,7 @@ function TestimonialCard({ testimonial }: { testimonial: SanityTestimonialsSecti
   const avatarUrl = testimonial.avatar && urlFor(testimonial.avatar).url();
 
   return (
-    <div className='flex min-w-[280px] flex-col rounded-lg border border-holicraft-terracotta/20 bg-white p-6 shadow-sm'>
+    <div className='flex flex-col h-full p-6 transition-shadow duration-300 border shadow-md rounded-xl border-holicraft-terracotta/30 bg-holicraft-beige hover:shadow-lg'>
       {/* Rating */}
       <div className='flex mb-4'>
         {[...Array(5)].map((_, i) => (
@@ -60,9 +60,9 @@ function TestimonialCard({ testimonial }: { testimonial: SanityTestimonialsSecti
 
       {/* Author */}
       <div className='flex items-center gap-4'>
-        {testimonial.avatar && (
+        {avatarUrl && (
           <div className='w-12 h-12 overflow-hidden rounded-full'>
-            <img src={avatarUrl} alt={testimonial.avatar.alt || testimonial.name} className='object-cover w-full h-full' />
+            <img src={avatarUrl} alt={testimonial.avatar?.alt || testimonial.name} className='object-cover w-full h-full' />
           </div>
         )}
         <div>

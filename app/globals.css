@@ -78,4 +78,43 @@ button {
   background-color: var(--holicraft-hover);
 }
 
+/* styles/globals.css */
+
+.bg-holicraft-terracotta {
+  background-color: #b25a3c;
+}
+
+.bg-holicraft-mustard {
+  background-color: #d39e42;
+}
+
+.bg-holicraft-hover {
+  background-color: #934830;
+}
+
+.bg-holicraft-cream {
+  background-color: #f9f6f1;
+}
+
+.text-holicraft-brown {
+  color: #4a2c1a;
+}
+
+.text-holicraft-cream {
+  color: #f9f6f1;
+}
+
+.text-holicraft-charcoal {
+  color: #3a2f27;
+}
+
+.text-holicraft-hover {
+  color: #934830;
+}
+
+/* styles/globals.css or wherever you're defining utility classes */
+.bg-holicraft-beige {
+  background-color: #efe5dc;
+}
+
 /* Add others as needed, following the same pattern */
