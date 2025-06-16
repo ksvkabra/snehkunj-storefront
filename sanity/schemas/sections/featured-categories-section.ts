@@ -37,6 +37,7 @@ export default defineType({
             }),
             defineField({
               name: 'description',
+              title: 'Category Description',
               type: 'text',
             }),
             defineField({

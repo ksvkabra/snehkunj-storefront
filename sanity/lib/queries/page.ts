@@ -48,6 +48,7 @@ export const pageQuery = groq`
           _type,
           title,
           slug,
+          description,
           image {
             asset-> {
               _id,

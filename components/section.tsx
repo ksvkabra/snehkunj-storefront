@@ -1,5 +1,6 @@
 'use client';
 
+import { Product } from 'lib/shopify/types';
 import type { SanitySection } from 'sanity/lib/types/page';
 import AboutSection from './about-section';
 import HeroSection from './hero-section';
@@ -13,9 +14,10 @@ import TrustBadgesSection from './sections/trust-badges-section';
 
 interface SectionProps {
   section: SanitySection;
+  featuredProducts: Product[];
 }
 
-export default function Section({ section }: SectionProps) {
+export default function Section({ section, featuredProducts }: SectionProps) {
   console.log('Section data:', section);
 
   switch (section.type) {
@@ -36,7 +38,7 @@ export default function Section({ section }: SectionProps) {
     case 'ctaBannerSection':
       return section.ctaBannerSection ? <CTABannerSection data={section.ctaBannerSection} /> : null;
     case 'shopifySection':
-      return section.shopifySection ? <ShopifySection data={section.shopifySection} /> : null;
+      return section.shopifySection ? <ShopifySection data={section.shopifySection} featuredProducts={featuredProducts} /> : null;
     default:
       console.warn(`Unknown section type: ${section.type}`);
       return null;
