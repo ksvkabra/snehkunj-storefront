@@ -1,9 +1,9 @@
 'use client';
 
+import { urlFor } from '@sanity/lib/image';
+import type { SanityHeroSection } from '@sanity/lib/types/hero-section';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { urlFor } from 'sanity/lib/image';
-import type { SanityHeroSection } from 'sanity/lib/types/hero-section';
 
 interface HeroSectionProps {
   data: SanityHeroSection;

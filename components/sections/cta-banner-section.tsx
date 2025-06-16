@@ -1,4 +1,4 @@
-import type { SanityCTABannerSection } from '@/sanity/lib/types/cta-banner-section';
+import type { SanityCTABannerSection } from '@sanity/lib/types/cta-banner-section';
 import Link from 'next/link';
 
 interface CTABannerSectionProps {

@@ -1,8 +1,8 @@
 'use client';
 
+import { urlFor } from '@sanity/lib/image';
+import type { SanityImageTextBannerSection } from '@sanity/lib/types/image-text-banner-section';
 import Link from 'next/link';
-import { urlFor } from 'sanity/lib/image';
-import type { SanityImageTextBannerSection } from 'sanity/lib/types/image-text-banner-section';
 
 interface ImageTextBannerSectionProps {
   data: SanityImageTextBannerSection;

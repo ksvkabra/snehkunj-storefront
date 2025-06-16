@@ -1,7 +1,7 @@
 import { HIDDEN_PRODUCT_TAG, SHOPIFY_GRAPHQL_API_ENDPOINT, TAGS } from 'lib/constants';
 import { isShopifyError } from 'lib/type-guards';
 import { ensureStartsWith } from 'lib/utils';
-import { unstable_cacheLife as cacheLife, unstable_cacheTag as cacheTag, revalidateTag } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 import { cookies, headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import { addToCartMutation, createCartMutation, editCartItemsMutation, removeFromCartMutation } from './mutations/cart';
@@ -94,7 +94,7 @@ export async function shopifyFetch<T>({
 }
 
 const removeEdgesAndNodes = <T>(array: Connection<T>): T[] => {
-  return array.edges.map((edge) => edge?.node);
+  return array?.edges?.map((edge) => edge?.node);
 };
 
 const reshapeCart = (cart: ShopifyCart): Cart => {
@@ -116,32 +116,26 @@ const reshapeCollection = (collection: ShopifyCollection): Collection | undefine
     return undefined;
   }
 
+  const { products, ...rest } = collection;
   return {
-    ...collection,
+    ...rest,
     path: `/search/${collection.handle}`,
+    products: removeEdgesAndNodes(products)
+      ?.map((product) => reshapeProduct(product))
+      .filter((product): product is Product => product !== undefined),
   };
 };
 
-const reshapeCollections = (collections: ShopifyCollection[]) => {
-  const reshapedCollections = [];
-
-  for (const collection of collections) {
-    if (collection) {
-      const reshapedCollection = reshapeCollection(collection);
-
-      if (reshapedCollection) {
-        reshapedCollections.push(reshapedCollection);
-      }
-    }
-  }
-
-  return reshapedCollections;
+const reshapeCollections = (collections: ShopifyCollection[]): Collection[] => {
+  return collections
+    ?.map((collection) => reshapeCollection(collection))
+    .filter((collection): collection is Collection => collection !== undefined);
 };
 
 const reshapeImages = (images: Connection<Image>, productTitle: string) => {
   const flattened = removeEdgesAndNodes(images);
 
-  return flattened.map((image) => {
+  return flattened?.map((image) => {
     const filename = image.url.match(/.*\/(.*)\..*/)?.[1];
     return {
       ...image,
@@ -151,7 +145,7 @@ const reshapeImages = (images: Connection<Image>, productTitle: string) => {
 };
 
 const reshapeProduct = (product: ShopifyProduct, filterHiddenProducts: boolean = true) => {
-  if (!product || (filterHiddenProducts && product.tags.includes(HIDDEN_PRODUCT_TAG))) {
+  if (!product || (filterHiddenProducts && product.tags?.includes(HIDDEN_PRODUCT_TAG))) {
     return undefined;
   }
 
@@ -247,10 +241,6 @@ export async function getCart(): Promise<Cart | undefined> {
 }
 
 export async function getCollection(handle: string): Promise<Collection | undefined> {
-  'use cache';
-  cacheTag(TAGS.collections);
-  cacheLife('days');
-
   const res = await shopifyFetch<ShopifyCollectionOperation>({
     query: getCollectionQuery,
     variables: {
@@ -270,10 +260,6 @@ export async function getCollectionProducts({
   reverse?: boolean;
   sortKey?: string;
 }): Promise<Product[]> {
-  'use cache';
-  cacheTag(TAGS.collections, TAGS.products);
-  cacheLife('days');
-
   const res = await shopifyFetch<ShopifyCollectionProductsOperation>({
     query: getCollectionProductsQuery,
     variables: {
@@ -292,16 +278,13 @@ export async function getCollectionProducts({
 }
 
 export async function getCollections(): Promise<Collection[]> {
-  'use cache';
-  cacheTag(TAGS.collections);
-  cacheLife('days');
-
   const res = await shopifyFetch<ShopifyCollectionsOperation>({
     query: getCollectionsQuery,
   });
   const shopifyCollections = removeEdgesAndNodes(res.body?.data?.collections);
   const collections = [
     {
+      id: 'all',
       handle: '',
       title: 'All',
       description: 'All products',
@@ -311,6 +294,7 @@ export async function getCollections(): Promise<Collection[]> {
       },
       path: '/search',
       updatedAt: new Date().toISOString(),
+      products: [],
     },
     // Filter out the `hidden` collections.
     // Collections that start with `hidden-*` need to be hidden on the search page.
@@ -321,10 +305,6 @@ export async function getCollections(): Promise<Collection[]> {
 }
 
 export async function getMenu(handle: string): Promise<Menu[]> {
-  'use cache';
-  cacheTag(TAGS.collections);
-  cacheLife('days');
-
   const res = await shopifyFetch<ShopifyMenuOperation>({
     query: getMenuQuery,
     variables: {
@@ -333,7 +313,7 @@ export async function getMenu(handle: string): Promise<Menu[]> {
   });
 
   return (
-    res.body?.data?.menu?.items.map((item: { title: string; url: string }) => ({
+    res.body?.data?.menu?.items?.map((item: { title: string; url: string }) => ({
       title: item.title,
       path: item.url.replace(domain, '').replace('/collections', '/search').replace('/pages', ''),
     })) || []
@@ -358,10 +338,6 @@ export async function getPages(): Promise<Page[]> {
 }
 
 export async function getProduct(handle: string): Promise<Product | undefined> {
-  'use cache';
-  cacheTag(TAGS.products);
-  cacheLife('days');
-
   const res = await shopifyFetch<ShopifyProductOperation>({
     query: getProductQuery,
     variables: {
@@ -373,10 +349,6 @@ export async function getProduct(handle: string): Promise<Product | undefined> {
 }
 
 export async function getProductRecommendations(productId: string): Promise<Product[]> {
-  'use cache';
-  cacheTag(TAGS.products);
-  cacheLife('days');
-
   const res = await shopifyFetch<ShopifyProductRecommendationsOperation>({
     query: getProductRecommendationsQuery,
     variables: {
@@ -396,10 +368,6 @@ export async function getProducts({
   reverse?: boolean;
   sortKey?: string;
 }): Promise<Product[]> {
-  'use cache';
-  cacheTag(TAGS.products);
-  cacheLife('days');
-
   const res = await shopifyFetch<ShopifyProductsOperation>({
     query: getProductsQuery,
     variables: {
@@ -434,11 +402,11 @@ export async function revalidate(req: NextRequest): Promise<NextResponse> {
   }
 
   if (isCollectionUpdate) {
-    revalidateTag(TAGS.collections);
+    revalidatePath(TAGS.collections);
   }
 
   if (isProductUpdate) {
-    revalidateTag(TAGS.products);
+    revalidatePath(TAGS.products);
   }
 
   return NextResponse.json({ status: 200, revalidated: true, now: Date.now() });

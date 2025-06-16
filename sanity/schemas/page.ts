@@ -26,7 +26,7 @@ export default defineType({
       name: 'sections',
       title: 'Sections',
       type: 'array',
-      of: [sectionSchema],
+      of: [sectionSchema as any],
     }),
     defineField({
       name: 'seo',

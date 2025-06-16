@@ -1,12 +1,15 @@
 {
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "prettier": "prettier --write --ignore-unknown .",
     "prettier:check": "prettier --check --ignore-unknown .",
-    "test": "pnpm prettier:check"
+    "test": "pnpm prettier:check",
+    "sanity:deploy": "sanity deploy",
+    "sanity:start": "sanity start",
+    "sanity:build": "sanity build"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
@@ -19,10 +22,10 @@
     "geist": "^1.3.1",
     "keen-slider": "^6.8.6",
     "lucide-react": "^0.515.0",
-    "next": "15.3.0-canary.13",
+    "next": "14.2.0",
     "next-sanity": "^9.12.0",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "sanity": "^3.92.0",
     "sonner": "^2.0.1",
     "styled-components": "^6.1.19"

@@ -2,8 +2,8 @@
 
 import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline';
 import { StarIcon } from '@heroicons/react/24/solid';
-import { urlFor } from 'sanity/lib/image';
-import type { SanityTestimonialsSection } from 'sanity/lib/types/testimonials-section';
+import { urlFor } from '@sanity/lib/image';
+import type { SanityTestimonialsSection } from '@sanity/lib/types/testimonials-section';
 
 interface TestimonialsSectionProps {
   data: SanityTestimonialsSection;
@@ -22,7 +22,7 @@ export default function TestimonialsSection({ data }: TestimonialsSectionProps) 
         {/* Mobile: Horizontal Scroll */}
         <div className='md:hidden'>
           <div className='flex gap-4 px-4 pb-4 -mx-4 overflow-x-auto'>
-            {data.testimonials.map((testimonial, index) => (
+            {data.testimonials?.map((testimonial, index) => (
               <TestimonialCard key={index} testimonial={testimonial} />
             ))}
           </div>
@@ -30,7 +30,7 @@ export default function TestimonialsSection({ data }: TestimonialsSectionProps) 
 
         {/* Desktop: Grid */}
         <div className='hidden gap-8 md:grid md:grid-cols-2 lg:grid-cols-3'>
-          {data.testimonials.map((testimonial, index) => (
+          {data.testimonials?.map((testimonial, index) => (
             <TestimonialCard key={index} testimonial={testimonial} />
           ))}
         </div>
@@ -46,7 +46,7 @@ function TestimonialCard({ testimonial }: { testimonial: SanityTestimonialsSecti
     <div className='flex flex-col h-full p-6 transition-shadow duration-300 border shadow-md rounded-xl border-holicraft-terracotta/30 bg-holicraft-beige hover:shadow-lg'>
       {/* Rating */}
       <div className='flex mb-4'>
-        {[...Array(5)].map((_, i) => (
+        {[...Array(5)]?.map((_, i) => (
           <span key={i} className='text-holicraft-mustard'>
             {i < testimonial.rating ? <StarIcon className='w-5 h-5' /> : <StarOutlineIcon className='w-5 h-5' />}
           </span>

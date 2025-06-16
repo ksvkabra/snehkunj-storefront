@@ -1,6 +1,6 @@
+import { urlFor } from '@sanity/lib/image';
+import { SanityTrustBadgesSection } from '@sanity/lib/types/trust-badges-section';
 import Image from 'next/image';
-import { urlFor } from 'sanity/lib/image';
-import { SanityTrustBadgesSection } from 'sanity/lib/types/trust-badges-section';
 
 interface TrustBadgesSectionProps {
   data: SanityTrustBadgesSection;
@@ -15,7 +15,7 @@ export default function TrustBadgesSection({ data }: TrustBadgesSectionProps) {
         </h2>
 
         <div className='grid grid-cols-2 gap-8 md:grid-cols-4'>
-          {data.badges.map((badge, index) => (
+          {data.badges?.map((badge, index) => (
             <div key={index} className='flex flex-col items-center text-center'>
               <div className='relative w-16 h-16 mb-4'>
                 <Image src={urlFor(badge.icon).url()} alt={badge.label} fill className='object-contain' />

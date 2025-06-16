@@ -1,7 +1,7 @@
 'use client';
 
+import type { SanitySection } from '@sanity/lib/types/page';
 import { Product } from 'lib/shopify/types';
-import type { SanitySection } from 'sanity/lib/types/page';
 import AboutSection from './about-section';
 import HeroSection from './hero-section';
 import CTABannerSection from './sections/cta-banner-section';
@@ -18,8 +18,6 @@ interface SectionProps {
 }
 
 export default function Section({ section, featuredProducts }: SectionProps) {
-  console.log('Section data:', section);
-
   switch (section.type) {
     case 'heroSection':
       return section.heroSection ? <HeroSection data={section.heroSection} /> : null;

@@ -1,7 +1,7 @@
+import type { SanityShopifySection } from '@sanity/lib/types/shopify-section';
 import FeaturedCollectionSection from 'components/featured-collection-section';
 import { Product } from 'lib/shopify/types';
 import { Suspense } from 'react';
-import type { SanityShopifySection } from 'sanity/lib/types/shopify-section';
 
 interface ShopifySectionProps {
   data: SanityShopifySection;

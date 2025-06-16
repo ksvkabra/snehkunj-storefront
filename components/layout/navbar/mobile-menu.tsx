@@ -86,7 +86,7 @@ export default function MobileMenu({ open, setOpen, menu }: MobileMenuProps) {
                 <nav>
                   <div className="px-6 pt-6 pb-2 text-xs font-bold uppercase tracking-wider text-gray-500">Categories</div>
                   <ul className="flex flex-col gap-1 px-2 pb-4">
-                    {menu.map((cat) => (
+                    {menu?.map((cat) => (
                       <li key={cat._id}>
                         <button
                           className="w-full flex justify-between items-center rounded-lg px-4 py-3 text-base font-medium text-gray-900 hover:bg-gray-100 transition-all"
@@ -110,7 +110,7 @@ export default function MobileMenu({ open, setOpen, menu }: MobileMenuProps) {
                   </button>
                   <div className="px-6 pt-6 pb-2 text-xs font-bold uppercase tracking-wider text-gray-500">{activeCategory.name}</div>
                   <ul className="flex flex-col gap-1 px-2 pb-4">
-                    {activeCategory.children.map((child) => (
+                    {activeCategory.children?.map((child) => (
                       <li key={child._key}>
                         {child.children && child.children.length > 0 ? (
                           <button

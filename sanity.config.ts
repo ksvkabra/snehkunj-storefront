@@ -24,6 +24,6 @@ export default defineConfig({
     visionTool({ defaultApiVersion: apiVersion }),
   ],
   schema: {
-    types: schemaTypes,
+    types: schemaTypes as any,
   },
 })

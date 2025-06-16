@@ -55,7 +55,7 @@ const MegaMenu: React.FC<MegaMenuProps> = ({ isOpen, categories, activeIndex, on
         <div className='flex-1'>
           {subCategory?.children?.length && subCategory.children.length > 0 ? (
             <ul className='grid gap-3'>
-              {subCategory.children.map((item) => (
+              {subCategory.children?.map((item) => (
                 <li key={item._key}>
                   <Link
                     href={item.slug?.current ? `/category/${item.slug.current}` : '#'}

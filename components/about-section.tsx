@@ -1,6 +1,6 @@
+import { urlFor } from '@sanity/lib/image';
+import { SanityAboutSection } from '@sanity/lib/types/about-section';
 import Link from 'next/link';
-import { urlFor } from 'sanity/lib/image';
-import { SanityAboutSection } from 'sanity/lib/types/about-section';
 
 interface AboutSectionProps {
   data: SanityAboutSection;

@@ -145,7 +145,7 @@ export default function FeaturedCollectionSection({ title, products, collectionH
 
           {/* Product Carousel */}
           <div ref={sliderRef} className='keen-slider'>
-            {products.map((product) => (
+            {products?.map((product) => (
               <div key={product.handle} className='keen-slider__slide'>
                 <Link href={`/product/${product.handle}`}>
                   <div className='w-full h-full'>

@@ -26,7 +26,7 @@ export function VariantSelector({
     return null;
   }
 
-  const combinations: Combination[] = variants.map((variant) => ({
+  const combinations: Combination[] = variants?.map((variant) => ({
     id: variant.id,
     availableForSale: variant.availableForSale,
     ...variant.selectedOptions.reduce(
@@ -35,12 +35,12 @@ export function VariantSelector({
     )
   }));
 
-  return options.map((option) => (
+  return options?.map((option) => (
     <form key={option.id}>
       <dl className="mb-8">
         <dt className="mb-4 text-sm uppercase tracking-wide">{option.name}</dt>
         <dd className="flex flex-wrap gap-3">
-          {option.values.map((value) => {
+          {option.values?.map((value) => {
             const optionNameLowerCase = option.name.toLowerCase();
 
             // Base option params on current selectedOptions so we can preserve any other param state.

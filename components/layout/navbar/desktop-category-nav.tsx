@@ -44,7 +44,7 @@ const DesktopCategoryNav = ({ categories }: DesktopCategoryNavProps) => {
     >
       <nav className='flex justify-center border-t border-b'>
         <ul className='flex gap-6 text-sm px-6 py-2 mx-auto'>
-          {categories.map((cat, idx) => (
+          {categories?.map((cat, idx) => (
             <li
               key={cat._id}
               className='relative'

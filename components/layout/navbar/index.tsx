@@ -1,10 +1,10 @@
 'use client';
+import { debugAllDocuments, getMenuCategories } from '@sanity/lib/services/menu-category';
+import type { SanityMenuCategory } from '@sanity/lib/types/menu-category';
 import { ChevronDown, Globe, Heart, Menu, Search, ShoppingCart, User, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Suspense, useCallback, useEffect, useState } from 'react';
-import { debugAllDocuments, getMenuCategories } from 'sanity/lib/services/menu-category';
-import type { SanityMenuCategory } from 'sanity/lib/types/menu-category';
 import DesktopCategoryNav from './desktop-category-nav';
 import MobileMenu from './mobile-menu';
 

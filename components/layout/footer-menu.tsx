@@ -37,7 +37,7 @@ export default function FooterMenu({ menu }: { menu: Menu[] }) {
   return (
     <nav>
       <ul>
-        {menu.map((item: Menu) => {
+        {menu?.map((item: Menu) => {
           return <FooterMenuItem key={item.title} item={item} />;
         })}
       </ul>

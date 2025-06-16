@@ -1,7 +1,7 @@
 'use client';
 
+import type { SanityNewsletterSignupSection } from '@sanity/lib/types/newsletter-signup-section';
 import { useState } from 'react';
-import type { SanityNewsletterSignupSection } from 'sanity/lib/types/newsletter-signup-section';
 
 interface NewsletterSignupSectionProps {
   data: SanityNewsletterSignupSection;

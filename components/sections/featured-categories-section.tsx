@@ -1,10 +1,10 @@
 'use client';
 
+import { urlFor } from '@sanity/lib/image';
+import type { SanityFeaturedCategoriesSection } from '@sanity/lib/types/featured-categories-section';
 import { motion, useInView } from 'framer-motion';
 import Link from 'next/link';
 import { useRef } from 'react';
-import { urlFor } from 'sanity/lib/image';
-import type { SanityFeaturedCategoriesSection } from 'sanity/lib/types/featured-categories-section';
 
 interface FeaturedCategoriesSectionProps {
   data: SanityFeaturedCategoriesSection;
@@ -36,7 +36,7 @@ export default function FeaturedCategoriesSection({ data }: FeaturedCategoriesSe
 
         {/* Category Cards */}
         <div className='grid gap-4 md:grid-cols-3'>
-          {data.categories.map((category, index) => (
+          {data.categories?.map((category, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 40 }}
