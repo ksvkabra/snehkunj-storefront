@@ -33,11 +33,32 @@ export const pageQuery = groq`
         title,
         testimonials[] {
           _type,
-          name,
+          type,
           quote,
-          avatar,
+          name,
           title,
-          rating
+          media {
+            asset-> {
+              _id,
+              url
+            },
+            alt
+          },
+          product-> {
+            _id,
+            _type,
+            title,
+            image {
+              asset-> {
+                _id,
+                url
+              },
+              alt
+            }
+          },
+          source,
+          ctaLabel,
+          ctaLink
         }
       },
       featuredCategoriesSection-> {
