@@ -2,6 +2,7 @@
 
 import { urlFor } from '@sanity/lib/image';
 import type { SanityImageTextBannerSection } from '@sanity/lib/types/image-text-banner-section';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 
 interface ImageTextBannerSectionProps {
@@ -10,43 +11,50 @@ interface ImageTextBannerSectionProps {
 
 export default function ImageTextBannerSection({ data }: ImageTextBannerSectionProps) {
   const imageUrl = urlFor(data.image).url();
-  const isImageLeft = data.imagePosition === 'left';
 
   return (
-    <section className="w-full py-16 bg-holicraft-cream md:py-24" aria-labelledby="banner-heading">
-      <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-        <div className={`grid gap-12 md:grid-cols-2 md:gap-16 lg:gap-24 ${isImageLeft ? '' : 'md:[grid-template-areas:"content_image"]'}`}>
-          {/* Image Column */}
-          <div className={`relative aspect-[4/3] overflow-hidden rounded-lg shadow-lg ${isImageLeft ? '' : 'md:[grid-area:image]'}`}>
-            <img
-              src={imageUrl}
-              alt={data.image.alt || data.headline}
-              className="object-cover w-full h-full"
-            />
-            {/* Subtle warm gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-holicraft-terracotta/10 to-holicraft-brown/10 mix-blend-multiply" />
-          </div>
+    <section className='w-full bg-black min-h-[500px]' aria-labelledby='banner-heading'>
+      <div className='max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 min-h-[500px]'>
+        {/* Left: Text Content */}
+        <motion.div
+          className='flex flex-col justify-center gap-6 px-6 md:px-10 text-white'
+          initial={{ opacity: 0, x: -40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: 'easeOut' }}
+        >
+          <h2 id='banner-heading' className='text-4xl sm:text-5xl font-extrabold leading-tight tracking-tight'>
+            {data.headline}
+          </h2>
 
-          {/* Content Column */}
-          <div className={`flex flex-col justify-center ${isImageLeft ? '' : 'md:[grid-area:content]'}`}>
-            <h2 id="banner-heading" className="mb-6 text-3xl font-bold tracking-tight text-holicraft-brown sm:text-4xl">
-              {data.headline}
-            </h2>
-            
-            <div className="mb-8 prose prose-lg text-holicraft-brown/90">
-              <p>{data.text}</p>
-            </div>
+          {data.text && <p className='text-lg text-white/80 leading-relaxed max-w-xl'>{data.text}</p>}
 
+          {data.ctaLink && data.ctaLabel && (
             <Link
               href={data.ctaLink}
-              className="inline-flex items-center justify-center px-8 py-3 text-base font-semibold transition-colors rounded-full shadow-sm w-fit bg-holicraft-terracotta text-holicraft-cream hover:bg-holicraft-brown focus:outline-none focus:ring-2 focus:ring-holicraft-terracotta focus:ring-offset-2"
+              className='inline-block w-fit px-8 py-3 text-base font-semibold bg-white text-black rounded-full shadow hover:bg-holicraft-mustard transition'
               aria-label={data.ctaLabel}
             >
               {data.ctaLabel}
             </Link>
-          </div>
-        </div>
+          )}
+        </motion.div>
+
+        {/* Right: Full-cover Image */}
+        <motion.div
+          className='relative h-[400px] md:h-auto w-screen md:w-[50vw]'
+          initial={{ opacity: 0, x: 40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.1 }}
+        >
+          <img
+            src={imageUrl}
+            alt={data.image.alt || data.headline}
+            className='absolute inset-0 w-full h-full object-cover rounded-l-xl md:rounded-none'
+          />
+        </motion.div>
       </div>
     </section>
   );
-} 
+}

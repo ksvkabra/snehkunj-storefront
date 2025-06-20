@@ -18,15 +18,6 @@ export const pageQuery = groq`
         ctaLink,
         backgroundImage
       },
-      aboutSection-> {
-        _id,
-        _type,
-        heading,
-        content,
-        ctaLabel,
-        ctaLink,
-        image
-      },
       testimonialsSection-> {
         _id,
         _type,
@@ -94,38 +85,6 @@ export const pageQuery = groq`
         imagePosition,
         ctaLabel,
         ctaLink
-      },
-      newsletterSignupSection-> {
-        _id,
-        _type,
-        headline,
-        subtext,
-        ctaLabel
-      },
-      trustBadgesSection-> {
-        _id,
-        _type,
-        title,
-        badges[] {
-          _type,
-          label,
-          icon {
-            asset-> {
-              _id,
-              url
-            },
-            alt
-          }
-        }
-      },
-      ctaBannerSection-> {
-        _id,
-        _type,
-        headline,
-        subheadline,
-        ctaLabel,
-        ctaLink,
-        backgroundColor
       },
       shopifySection-> {
         _id,
