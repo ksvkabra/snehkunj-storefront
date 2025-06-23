@@ -8,90 +8,95 @@ export const pageQuery = groq`
     slug,
     sections[] {
       _type,
-      type,
-      heroSection-> {
-        _id,
-        _type,
-        headline,
-        subheadline,
-        ctaLabel,
-        ctaLink,
-        backgroundImage
-      },
-      testimonialsSection-> {
-        _id,
-        _type,
-        title,
-        testimonials[] {
-          _type,
-          type,
-          quote,
-          name,
-          title,
-          media {
-            asset-> {
-              _id,
-              url
-            },
-            alt
-          },
-          product-> {
-            _id,
-            _type,
-            title,
-            image {
-              asset-> {
-                _id,
-                url
-              },
-              alt
-            }
-          },
-          source,
-          ctaLabel,
-          ctaLink
-        }
-      },
-      featuredCategoriesSection-> {
-        _id,
-        _type,
-        title,
-        categories[] {
-          _type,
-          title,
-          slug,
-          description,
-          image {
-            asset-> {
-              _id,
-              url
-            },
-            alt
-          }
-        }
-      },
-      imageTextBannerSection-> {
-        _id,
-        _type,
-        headline,
-        text,
-        image {
-          asset-> {
-            _id,
-            url
-          },
-          alt
-        },
-        imagePosition,
-        ctaLabel,
-        ctaLink
-      },
-      shopifySection-> {
-        _id,
-        _type,
-        sectionName,
-        sectionId
-      }
+      sectionType,
+      sectionName,
+      
+      // Content Section fields
+      title,
+      subheading,
+      backgroundImage,
+      primaryCTA,
+      secondaryCTA,
+      shippingBadge,
+      craftsmanshipTitle,
+      craftsmanshipBody,
+      craftsmanshipImage,
+      craftsmanshipCTA,
+      testimonialsTitle,
+      testimonials,
+      chatTextBlock,
+      highlightedInstruction,
+      
+      // Image Section fields
+      backgroundTitle,
+      backgroundSubtitle,
+      backgroundOverlay,
+      backgroundCTA,
+      galleryTitle,
+      galleryDescription,
+      galleryImages,
+      galleryLayout,
+      galleryColumns,
+      socialProofTitle,
+      socialProofImages,
+      socialProofLayout,
+      
+      // Product Section fields
+      sectionTitle,
+      description,
+      productSourceType,
+      manualProducts,
+      productHandle,
+      customTitle,
+      customDescription,
+      shopifyCollection,
+      shopifyTag,
+      productLimit,
+      showProductImages,
+      showProductPrices,
+      showProductTitles,
+      showAddToCart,
+      carouselAutoplay,
+      carouselSpeed,
+      carouselShowArrows,
+      carouselShowDots,
+      gridColumns,
+      gridGap,
+      featuredLayout,
+      featuredHighlight,
+      cta,
+      
+      // Category Section fields
+      categories,
+      showCategoryCounts,
+      showCategoryDescriptions,
+      imageAspectRatio,
+      navigationStyle,
+      showImages,
+      showCounts,
+      
+      // Layout Section fields
+      spacerHeight,
+      spacerResponsive,
+      dividerStyle,
+      dividerColor,
+      dividerWidth,
+      dividerAlignment,
+      dividerText,
+      containerContent,
+      containerMaxWidth,
+      containerPadding,
+      containerCentered,
+      
+      // Common styling fields
+      headingStyle,
+      textAlign,
+      textColor,
+      backgroundColor,
+      paddingTop,
+      paddingBottom,
+      hideOnMobile,
+      customClassName
     },
     seo
   }

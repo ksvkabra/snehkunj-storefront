@@ -1,30 +1,35 @@
 import author from './author';
 import blockContent from './block-content';
 import category from './category';
-import footer from './footer';
-import heroSection from './hero-section';
 import menuCategory from './menu-category';
 import page from './page';
 import post from './post';
-import product from './product';
-import featuredCategoriesSection from './sections/featured-categories-section';
-import imageTextBannerSection from './sections/image-text-banner-section';
-import shopifySection from './sections/shopify-section';
-import testimonialsSection, { testimonialCard } from './sections/testimonials-section';
+
+// New modular homepage schemas
+import homePage from './home-page';
+import categorySection from './objects/category-section';
+import contentSection from './objects/content-section';
+import globalFooter from './objects/global-footer';
+import imageSection from './objects/image-section';
+import layoutSection from './objects/layout-section';
+import productSection from './objects/product-section';
+import shopifySection from './objects/shopify-section';
 
 export const schemaTypes = [
   author,
   blockContent,
   category,
-  footer,
-  heroSection,
   menuCategory,
   page,
   post,
-  product,
-  testimonialsSection,
-  featuredCategoriesSection,
-  imageTextBannerSection,
+  
+  // New modular homepage schemas
+  homePage,
+  contentSection,
+  imageSection,
+  productSection,
+  categorySection,
+  layoutSection,
+  globalFooter,
   shopifySection,
-  testimonialCard,
 ];

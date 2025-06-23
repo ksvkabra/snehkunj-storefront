@@ -1,0 +1,78 @@
+import type { SanityImageObject } from '@sanity/image-url/lib/types/types';
+
+// Common styling fields
+export interface SanitySectionStyling {
+  headingStyle?: 'h1' | 'h2' | 'h3' | 'display' | 'eyebrow';
+  textAlign?: 'left' | 'center' | 'right';
+  textColor?: string;
+  backgroundColor?: string;
+  paddingTop?: 'pt-0' | 'pt-4' | 'pt-8' | 'pt-12' | 'pt-16';
+  paddingBottom?: 'pb-0' | 'pb-4' | 'pb-8' | 'pb-12' | 'pb-16';
+  hideOnMobile?: boolean;
+  customClassName?: string;
+}
+
+// Hero Section
+export interface SanityHeroSection extends SanitySectionStyling {
+  _type: 'contentSection';
+  sectionType: 'hero';
+  sectionName?: string;
+  title: string;
+  subheading?: string;
+  backgroundImage?: SanityImageObject;
+  primaryCTA?: {
+    text: string;
+    link: string;
+  };
+  secondaryCTA?: {
+    text: string;
+    link: string;
+  };
+  shippingBadge?: string;
+}
+
+// Craftsmanship Story Section
+export interface SanityCraftsmanshipSection extends SanitySectionStyling {
+  _type: 'contentSection';
+  sectionType: 'craftsmanship';
+  sectionName?: string;
+  craftsmanshipTitle: string;
+  craftsmanshipBody?: any[]; // PortableText
+  craftsmanshipImage?: SanityImageObject;
+  craftsmanshipCTA?: {
+    text: string;
+    link: string;
+  };
+}
+
+// Testimonials Section
+export interface SanityTestimonialItem {
+  quote: string;
+  author: string;
+  image?: SanityImageObject;
+  rating?: number;
+}
+
+export interface SanityTestimonialsSection extends SanitySectionStyling {
+  _type: 'contentSection';
+  sectionType: 'testimonials';
+  sectionName?: string;
+  testimonialsTitle: string;
+  testimonials: SanityTestimonialItem[];
+}
+
+// Chat Prompt Section
+export interface SanityChatSection extends SanitySectionStyling {
+  _type: 'contentSection';
+  sectionType: 'chat';
+  sectionName?: string;
+  chatTextBlock?: any[]; // PortableText
+  highlightedInstruction: string;
+}
+
+// Union type for all content sections
+export type SanityContentSection = 
+  | SanityHeroSection
+  | SanityCraftsmanshipSection
+  | SanityTestimonialsSection
+  | SanityChatSection; 

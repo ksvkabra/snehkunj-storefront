@@ -50,6 +50,16 @@
       "pattern": "kebab-case",
       "suffix": ".module.css",
       "examples": "product-card.module.css, cart-drawer.module.css"
+    },
+    "sanity": {
+      "pattern": "kebab-case",
+      "description": "All Sanity schema files must use kebab-case naming",
+      "examples": {
+        "documents": "home-page.ts, product-page.ts, blog-post.ts",
+        "objects": "content-section.ts, image-section.ts, product-section.ts, category-section.ts, layout-section.ts, shopify-section.ts, global-footer.ts",
+        "sections": "hero-section.ts, testimonials-section.ts, featured-categories-section.ts",
+        "types": "block-content.ts, slug.ts, section.ts"
+      }
     }
   },
   "paths": {
@@ -68,7 +78,8 @@
     "lib": ["lib", "utils", "hooks", "context", "services"],
     "constants": ["constants"],
     "styles": ["styles", "components/**/*.module.css"],
-    "config": ["next.config.ts", "postcss.config.mjs", "tsconfig.json"]
+    "config": ["next.config.ts", "postcss.config.mjs", "tsconfig.json"],
+    "sanity": ["sanity/schemas", "sanity/schemas/objects", "sanity/schemas/sections"]
   },
   "tools": {
     "tailwind": true,
@@ -76,7 +87,8 @@
     "typescript": true,
     "shopify": true,
     "postcss": true,
-    "pnpm": true
+    "pnpm": true,
+    "sanity": true
   },
   "context": {
     "entrypoints": [
@@ -138,6 +150,17 @@
       "lib/shopify/queries.ts",
       "lib/shopify/fetch.ts"
     ],
+    "sanity": [
+      "sanity/schemas/index.ts",
+      "sanity/schemas/home-page.ts",
+      "sanity/schemas/objects/content-section.ts",
+      "sanity/schemas/objects/image-section.ts",
+      "sanity/schemas/objects/product-section.ts",
+      "sanity/schemas/objects/shopify-section.ts",
+      "sanity/schemas/objects/category-section.ts",
+      "sanity/schemas/objects/layout-section.ts",
+      "sanity/schemas/objects/global-footer.ts"
+    ],
     "components": {
       "ui": [
         "components/carousel.tsx",
@@ -172,7 +195,8 @@
       "extractConstants": "Move static values (URLs, routes, countries, currencies) into the `constants/` folder and import them properly. Use TypeScript enums or const objects for type safety.",
       "newLayout": "Create a new layout component in `components/layout/`. Ensure it's responsive and follows the project's design system.",
       "newIcon": "Add a new icon component in `components/icons/`. Use SVG format and ensure it's properly typed and sized.",
-      "newGrid": "Create a new grid component in `components/grid/`. Ensure it's responsive and follows the project's grid system."
+      "newGrid": "Create a new grid component in `components/grid/`. Ensure it's responsive and follows the project's grid system.",
+      "newSanitySchema": "Create a new Sanity schema file using kebab-case naming. Place in appropriate folder (objects/, sections/, or root schemas/). Include proper TypeScript types, validation rules, and preview configurations. Follow the modular section pattern with conditional fields based on sectionType."
     }
   }
 } 

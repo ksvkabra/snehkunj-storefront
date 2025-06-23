@@ -1,13 +1,13 @@
 import { defineField, defineType } from 'sanity';
 
 export default defineType({
-  name: 'page',
-  title: 'Page',
+  name: 'homePage',
+  title: 'Homepage',
   type: 'document',
   fields: [
     defineField({
       name: 'title',
-      title: 'Title',
+      title: 'Page Title',
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
@@ -19,11 +19,14 @@ export default defineType({
         source: 'title',
         maxLength: 96,
       },
+      initialValue: {
+        current: 'home',
+      },
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'sections',
-      title: 'Sections',
+      title: 'Page Sections',
       type: 'array',
       of: [
         { type: 'contentSection' },
@@ -33,6 +36,7 @@ export default defineType({
         { type: 'layoutSection' },
         { type: 'shopifySection' },
       ],
+      validation: (Rule) => Rule.required().min(1),
     }),
     defineField({
       name: 'seo',
@@ -50,6 +54,14 @@ export default defineType({
           type: 'text',
           rows: 3,
         }),
+        defineField({
+          name: 'ogImage',
+          title: 'Open Graph Image',
+          type: 'image',
+          options: {
+            hotspot: true,
+          },
+        }),
       ],
     }),
   ],
@@ -57,12 +69,13 @@ export default defineType({
     select: {
       title: 'title',
       slug: 'slug.current',
+      sectionCount: 'sections.length',
     },
-    prepare({ title, slug }) {
+    prepare({ title, slug, sectionCount }) {
       return {
-        title,
-        subtitle: `/${slug}`,
+        title: title || 'Homepage',
+        subtitle: `/${slug} • ${sectionCount || 0} sections`,
       };
     },
   },
-});
+}); 
