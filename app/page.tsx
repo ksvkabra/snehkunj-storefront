@@ -1,6 +1,6 @@
 import { getPage } from '@sanity/lib/services/page';
 import Footer from 'components/layout/footer';
-import Section from 'components/section';
+import SanitySection from 'components/sanity-section';
 import { getCollectionProducts } from 'lib/shopify';
 
 export const metadata = {
@@ -17,7 +17,7 @@ export default async function HomePage() {
     <>
       {/* Render Sanity sections */}
       {pageContent?.sections?.map((section, index) => (
-        <Section key={`${section._type}-${index}`} section={section} featuredProducts={featuredProducts} />
+        <SanitySection key={`${section._type}-${index}`} section={section} featuredProducts={featuredProducts} />
       ))}
       <Footer />
     </>

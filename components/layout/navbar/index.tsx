@@ -1,7 +1,8 @@
 'use client';
 import { debugAllDocuments, getMenuCategories } from '@sanity/lib/services/menu-category';
 import type { SanityMenuCategory } from '@sanity/lib/types/menu-category';
-import { ChevronDown, Globe, Heart, Menu, Search, ShoppingCart, User, X } from 'lucide-react';
+import CartModal from 'components/cart/modal';
+import { ChevronDown, Globe, Heart, Menu, Search, User, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Suspense, useCallback, useEffect, useState } from 'react';
@@ -108,9 +109,7 @@ export default function Navbar() {
             <button className='flex items-center justify-center w-10 h-10' onClick={() => setSearchOpen(true)} aria-label='Open search'>
               <Search className='h-6 w-6 text-gray-900' />
             </button>
-            <Link href='/cart' className='flex items-center justify-center w-10 h-10' aria-label='Cart'>
-              <ShoppingCart className='h-6 w-6 text-gray-900' />
-            </Link>
+            <CartModal />
           </>
         )}
       </div>
@@ -147,9 +146,7 @@ export default function Navbar() {
           <button className='flex items-center justify-center w-10 h-10'>
             <Heart className='h-5 w-5 text-gray-700 hover:text-gray-900' />
           </button>
-          <Link href='/cart' className='flex items-center justify-center w-10 h-10' aria-label='Cart'>
-            <ShoppingCart className='h-5 w-5 text-gray-700 hover:text-gray-900' />
-          </Link>
+          <CartModal />
           <button
             className='flex items-center justify-center w-10 h-10'
             onClick={() => {

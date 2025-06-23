@@ -16,14 +16,31 @@ export async function addItem(
   prevState: any,
   selectedVariantId: string | undefined
 ) {
+  console.log('🛒 Server action: addItem called with variantId:', selectedVariantId);
+  
   if (!selectedVariantId) {
+    console.error('❌ Server action: No variant ID provided');
     return 'Error adding item to cart';
   }
 
   try {
+    let cart = await getCart();
+    console.log('🛒 Server action: Current cart:', cart ? 'exists' : 'not found');
+    
+    // Create cart if it doesn't exist
+    if (!cart) {
+      console.log('🛒 Server action: Creating new cart');
+      cart = await createCart();
+      (await cookies()).set('cartId', cart.id!);
+      console.log('🛒 Server action: New cart created with ID:', cart.id);
+    }
+
+    console.log('🛒 Server action: Adding item to cart');
     await addToCart([{ merchandiseId: selectedVariantId, quantity: 1 }]);
     revalidateTag(TAGS.cart);
+    console.log('✅ Server action: Item added successfully');
   } catch (e) {
+    console.error('❌ Server action: Error adding item to cart:', e);
     return 'Error adding item to cart';
   }
 }
@@ -95,12 +112,23 @@ export async function updateItemQuantity(
   }
 }
 
-export async function redirectToCheckout() {
-  let cart = await getCart();
-  redirect(cart!.checkoutUrl);
-}
-
 export async function createCartAndSetCookie() {
   let cart = await createCart();
   (await cookies()).set('cartId', cart.id!);
+}
+
+export async function redirectToCheckout(_formData: FormData) {
+  const cart = await getCart();
+
+  if (!cart) {
+    throw new Error('Something went wrong');
+  }
+
+  const checkoutUrl = cart.checkoutUrl;
+
+  if (!checkoutUrl) {
+    throw new Error('Missing checkout URL');
+  }
+
+  redirect(checkoutUrl);
 }

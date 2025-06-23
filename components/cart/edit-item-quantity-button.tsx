@@ -4,17 +4,20 @@ import { MinusIcon, PlusIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import { updateItemQuantity } from 'components/cart/actions';
 import type { CartItem } from 'lib/shopify/types';
-import { useActionState } from 'react';
+import { useFormStatus } from 'react-dom';
 
 function SubmitButton({ type }: { type: 'plus' | 'minus' }) {
+  const { pending } = useFormStatus();
+  
   return (
     <button
       type="submit"
+      disabled={pending}
       aria-label={
         type === 'plus' ? 'Increase item quantity' : 'Reduce item quantity'
       }
       className={clsx(
-        'ease flex h-full min-w-[36px] max-w-[36px] flex-none items-center justify-center rounded-full p-2 transition-all duration-200 hover:border-neutral-800 hover:opacity-80',
+        'ease flex h-full min-w-[36px] max-w-[36px] flex-none items-center justify-center rounded-full p-2 transition-all duration-200 hover:border-neutral-800 hover:opacity-80 cursor-pointer',
         {
           'ml-auto': type === 'minus'
         }
@@ -38,24 +41,20 @@ export function EditItemQuantityButton({
   type: 'plus' | 'minus';
   optimisticUpdate: any;
 }) {
-  const [message, formAction] = useActionState(updateItemQuantity, null);
+  const { pending } = useFormStatus();
   const payload = {
     merchandiseId: item.merchandise.id,
     quantity: type === 'plus' ? item.quantity + 1 : item.quantity - 1
   };
-  const updateItemQuantityAction = formAction.bind(null, payload);
 
   return (
     <form
       action={async () => {
         optimisticUpdate(payload.merchandiseId, type);
-        updateItemQuantityAction();
+        await updateItemQuantity(null, payload);
       }}
     >
       <SubmitButton type={type} />
-      <p aria-live="polite" className="sr-only" role="status">
-        {message}
-      </p>
     </form>
   );
 }

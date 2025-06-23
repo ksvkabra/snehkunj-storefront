@@ -1,24 +1,21 @@
-import clsx from 'clsx';
+import { Money } from 'lib/shopify/types';
 
-const Price = ({
+const DEFAULT_CURRENCY_CODE = 'USD';
+
+export default function Price({
   amount,
-  className,
-  currencyCode = 'USD',
-  currencyCodeClassName
-}: {
-  amount: string;
-  className?: string;
-  currencyCode: string;
-  currencyCodeClassName?: string;
-} & React.ComponentProps<'p'>) => (
-  <p suppressHydrationWarning={true} className={className}>
-    {`${new Intl.NumberFormat(undefined, {
-      style: 'currency',
-      currency: currencyCode,
-      currencyDisplay: 'narrowSymbol'
-    }).format(parseFloat(amount))}`}
-    <span className={clsx('ml-1 inline', currencyCodeClassName)}>{`${currencyCode}`}</span>
-  </p>
-);
+  currencyCode = DEFAULT_CURRENCY_CODE,
+  ...props
+}: Money & {
+  currencyCode?: string;
+  [key: string]: any;
+}) {
+  const value = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: currencyCode,
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(parseFloat(amount));
 
-export default Price;
+  return <span {...props}>{value}</span>;
+}

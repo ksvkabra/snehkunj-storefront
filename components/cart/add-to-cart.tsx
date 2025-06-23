@@ -2,21 +2,15 @@
 
 import { PlusIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
-import { addItem } from 'components/cart/actions';
 import { useProduct } from 'components/product/product-context';
 import { Product, ProductVariant } from 'lib/shopify/types';
-import { useActionState } from 'react';
-import { useCart } from './cart-context';
+import { useFormStatus } from 'react-dom';
+import { addItem } from './actions';
 
-function SubmitButton({
-  availableForSale,
-  selectedVariantId
-}: {
-  availableForSale: boolean;
-  selectedVariantId: string | undefined;
-}) {
+function SubmitButton({ availableForSale, selectedVariantId }: { availableForSale: boolean; selectedVariantId: string | undefined }) {
+  const { pending } = useFormStatus();
   const buttonClasses =
-    'relative flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white';
+    'relative flex w-full items-center justify-center rounded-full bg-blue-600 p-4 tracking-wide text-white cursor-pointer';
   const disabledClasses = 'cursor-not-allowed opacity-60 hover:opacity-60';
 
   if (!availableForSale) {
@@ -29,14 +23,7 @@ function SubmitButton({
 
   if (!selectedVariantId) {
     return (
-      <button
-        aria-label="Please select an option"
-        disabled
-        className={clsx(buttonClasses, disabledClasses)}
-      >
-        <div className="absolute left-0 ml-4">
-          <PlusIcon className="h-5" />
-        </div>
+      <button aria-label='Please select an option' disabled className={clsx(buttonClasses, disabledClasses)}>
         Add To Cart
       </button>
     );
@@ -44,51 +31,48 @@ function SubmitButton({
 
   return (
     <button
-      aria-label="Add to cart"
+      aria-label='Add to cart'
+      disabled={pending}
       className={clsx(buttonClasses, {
-        'hover:opacity-90': true
+        'hover:opacity-90': true,
+        'opacity-50': pending,
       })}
     >
-      <div className="absolute left-0 ml-4">
-        <PlusIcon className="h-5" />
+      <div className='absolute left-0 ml-4'>
+        {pending ? <div className='animate-spin rounded-full h-5 w-5 border-b-2 border-white'></div> : <PlusIcon className='h-5' />}
       </div>
-      Add To Cart
+      {pending ? 'Adding...' : 'Add To Cart'}
     </button>
   );
 }
 
 export function AddToCart({ product }: { product: Product }) {
   const { variants, availableForSale } = product;
-  const { addCartItem } = useCart();
   const { state } = useProduct();
-  const [message, formAction] = useActionState(addItem, null);
 
   const variant = variants.find((variant: ProductVariant) =>
-    variant.selectedOptions.every(
-      (option) => option.value === state[option.name.toLowerCase()]
-    )
+    variant.selectedOptions.every((option) => option.value === state[option.name.toLowerCase()])
   );
   const defaultVariantId = variants.length === 1 ? variants[0]?.id : undefined;
   const selectedVariantId = variant?.id || defaultVariantId;
-  const addItemAction = formAction.bind(null, selectedVariantId);
-  const finalVariant = variants.find(
-    (variant) => variant.id === selectedVariantId
-  )!;
+  const finalVariant = variants.find((variant) => variant.id === selectedVariantId)!;
 
   return (
     <form
       action={async () => {
-        addCartItem(finalVariant, product);
-        addItemAction();
+        if (finalVariant && selectedVariantId) {
+          // Only add to cart via server action
+          try {
+            await addItem(null, selectedVariantId);
+          } catch (error) {
+            console.error('❌ Failed to add item to cart:', error);
+          }
+        } else {
+          console.warn('⚠️ Cannot add to cart: missing variant or variant ID');
+        }
       }}
     >
-      <SubmitButton
-        availableForSale={availableForSale}
-        selectedVariantId={selectedVariantId}
-      />
-      <p aria-live="polite" className="sr-only" role="status">
-        {message}
-      </p>
+      <SubmitButton availableForSale={availableForSale} selectedVariantId={selectedVariantId} />
     </form>
   );
 }

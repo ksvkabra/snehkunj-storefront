@@ -11,30 +11,30 @@ import { getMenuQuery } from './queries/menu';
 import { getPageQuery, getPagesQuery } from './queries/page';
 import { getProductQuery, getProductRecommendationsQuery, getProductsQuery } from './queries/product';
 import {
-  Cart,
-  Collection,
-  Connection,
-  Image,
-  Menu,
-  Page,
-  Product,
-  ShopifyAddToCartOperation,
-  ShopifyCart,
-  ShopifyCartOperation,
-  ShopifyCollection,
-  ShopifyCollectionOperation,
-  ShopifyCollectionProductsOperation,
-  ShopifyCollectionsOperation,
-  ShopifyCreateCartOperation,
-  ShopifyMenuOperation,
-  ShopifyPageOperation,
-  ShopifyPagesOperation,
-  ShopifyProduct,
-  ShopifyProductOperation,
-  ShopifyProductRecommendationsOperation,
-  ShopifyProductsOperation,
-  ShopifyRemoveFromCartOperation,
-  ShopifyUpdateCartOperation,
+    Cart,
+    Collection,
+    Connection,
+    Image,
+    Menu,
+    Page,
+    Product,
+    ShopifyAddToCartOperation,
+    ShopifyCart,
+    ShopifyCartOperation,
+    ShopifyCollection,
+    ShopifyCollectionOperation,
+    ShopifyCollectionProductsOperation,
+    ShopifyCollectionsOperation,
+    ShopifyCreateCartOperation,
+    ShopifyMenuOperation,
+    ShopifyPageOperation,
+    ShopifyPagesOperation,
+    ShopifyProduct,
+    ShopifyProductOperation,
+    ShopifyProductRecommendationsOperation,
+    ShopifyProductsOperation,
+    ShopifyRemoveFromCartOperation,
+    ShopifyUpdateCartOperation,
 } from './types';
 
 const domain = process.env.SHOPIFY_STORE_DOMAIN ? ensureStartsWith(process.env.SHOPIFY_STORE_DOMAIN, 'https://') : '';
@@ -117,12 +117,14 @@ const reshapeCollection = (collection: ShopifyCollection): Collection | undefine
   }
 
   const { products, ...rest } = collection;
+  const reshapedProducts = removeEdgesAndNodes(products)
+    ?.map((product) => reshapeProduct(product))
+    .filter((product): product is Product => product !== undefined) || [];
+
   return {
     ...rest,
     path: `/search/${collection.handle}`,
-    products: removeEdgesAndNodes(products)
-      ?.map((product) => reshapeProduct(product))
-      .filter((product): product is Product => product !== undefined),
+    products: reshapedProducts,
   };
 };
 
@@ -139,7 +141,7 @@ const reshapeImages = (images: Connection<Image>, productTitle: string) => {
     const filename = image.url.match(/.*\/(.*)\..*/)?.[1];
     return {
       ...image,
-      altText: image.altText || `${productTitle} - ${filename}`,
+      altText: image.altText || `${productTitle} - ${filename}` || 'Product image',
     };
   });
 };
