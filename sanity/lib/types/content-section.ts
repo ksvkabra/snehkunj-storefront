@@ -19,12 +19,17 @@ export interface SanityHeroSection extends SanitySectionStyling {
   sectionName?: string;
   title: string;
   subheading?: string;
-  backgroundImage?: SanityImageObject;
-  primaryCTA?: {
+  description?: string;
+  image?: {
+    asset: SanityImageObject;
+    alt?: string;
+  };
+  imagePosition?: 'left' | 'right';
+  primaryCta?: {
     text: string;
     link: string;
   };
-  secondaryCTA?: {
+  secondaryCta?: {
     text: string;
     link: string;
   };

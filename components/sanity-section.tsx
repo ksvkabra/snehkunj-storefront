@@ -1,9 +1,9 @@
 'use client';
 
-import type { SanitySection } from '@sanity/lib/types/page';
-import { Product } from 'lib/shopify/types';
-import HeroSection from './hero-section';
+import { Product } from '../lib/shopify/types';
+import type { SanitySection } from '../sanity/lib/types/page';
 import FeaturedCategoriesSection from './sections/featured-categories-section';
+import HeroSection from './sections/hero-section';
 import ImageTextBannerSection from './sections/image-text-banner-section';
 import ShopifySection from './sections/shopify-section';
 import TestimonialsSection from './sections/testimonials-section';
@@ -14,19 +14,116 @@ interface SanitySectionProps {
 }
 
 export default function SanitySection({ section, featuredProducts }: SanitySectionProps) {
-  switch (section.type) {
-    case 'heroSection':
-      return section.heroSection ? <HeroSection data={section.heroSection} /> : null;
-    case 'testimonialsSection':
-      return section.testimonialsSection ? <TestimonialsSection data={section.testimonialsSection} /> : null;
-    case 'featuredCategoriesSection':
-      return section.featuredCategoriesSection ? <FeaturedCategoriesSection data={section.featuredCategoriesSection} /> : null;
-    case 'imageTextBannerSection':
-      return section.imageTextBannerSection ? <ImageTextBannerSection data={section.imageTextBannerSection} /> : null;
-    case 'shopifySection':
-      return section.shopifySection ? <ShopifySection data={section.shopifySection} featuredProducts={featuredProducts} /> : null;
-    default:
-      console.warn(`Unknown section type: ${section.type}`);
-      return null;
+  // Handle content sections (hero, testimonials, etc.)
+  if (section._type === 'contentSection') {
+    const contentSection = section as any;
+    switch (contentSection.sectionType) {
+      case 'hero':
+        return (
+          <HeroSection
+            title={contentSection.title}
+            subtitle={contentSection.subheading}
+            description={contentSection.description}
+            image={contentSection.image}
+            imagePosition={contentSection.imagePosition}
+            primaryCta={contentSection.primaryCta}
+            secondaryCta={contentSection.secondaryCta}
+            shippingBadge={contentSection.shippingBadge}
+          />
+        );
+      case 'testimonials':
+        return <TestimonialsSection data={contentSection} />;
+      default:
+        console.warn(`Unknown content section type: ${contentSection.sectionType}`);
+        return null;
+    }
   }
+
+  // Handle image sections
+  if (section._type === 'imageSection') {
+    const imageSection = section as any;
+    switch (imageSection.sectionType) {
+      case 'background':
+        return (
+          <ImageTextBannerSection
+            data={{
+              title: imageSection.backgroundTitle || '',
+              subtitle: imageSection.backgroundSubtitle || '',
+              image: imageSection.backgroundImage,
+              cta: imageSection.backgroundCTA,
+              overlay: imageSection.backgroundOverlay,
+            }}
+          />
+        );
+      default:
+        console.warn(`Unknown image section type: ${imageSection.sectionType}`);
+        return null;
+    }
+  }
+
+  // Handle product sections
+  if (section._type === 'productSection') {
+    const productSection = section as any;
+    switch (productSection.sectionType) {
+      case 'carousel':
+      case 'grid':
+      case 'featured':
+        return <FeaturedCategoriesSection data={productSection} />;
+      default:
+        console.warn(`Unknown product section type: ${productSection.sectionType}`);
+        return null;
+    }
+  }
+
+  // Handle category sections
+  if (section._type === 'categorySection') {
+    return <FeaturedCategoriesSection data={section} />;
+  }
+
+  // Handle layout sections
+  if (section._type === 'layoutSection') {
+    const layoutSection = section as any;
+    switch (layoutSection.sectionType) {
+      case 'spacer':
+        return (
+          <div className={`${layoutSection.spacerHeight || 'h-8'}`} />
+        );
+      case 'divider':
+        return (
+          <div className={`${layoutSection.paddingTop || 'pt-8'} ${layoutSection.paddingBottom || 'pb-8'}`}>
+            <div className={`${layoutSection.dividerWidth || 'border-t'} ${layoutSection.dividerColor || 'border-gray-200'} ${layoutSection.dividerAlignment === 'center' ? 'mx-auto' : ''}`}>
+              {layoutSection.dividerText && (
+                <span className="px-4 text-sm text-gray-500">{layoutSection.dividerText}</span>
+              )}
+            </div>
+          </div>
+        );
+      case 'container':
+        return (
+          <div className={`${layoutSection.paddingTop || 'pt-8'} ${layoutSection.paddingBottom || 'pb-8'} ${layoutSection.backgroundColor || ''}`}>
+            <div className={`${layoutSection.containerMaxWidth || 'max-w-7xl'} ${layoutSection.containerPadding || 'px-4'} ${layoutSection.containerCentered ? 'mx-auto' : ''}`}>
+              {layoutSection.containerContent?.map((item: any, index: number) => (
+                <div key={index}>
+                  {/* Render container content - this would need to be handled based on content type */}
+                  {typeof item === 'string' ? item : JSON.stringify(item)}
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      default:
+        console.warn(`Unknown layout section type: ${layoutSection.sectionType}`);
+        return null;
+    }
+  }
+
+  // Handle Shopify sections
+  if (section._type === 'shopifySection') {
+    return <ShopifySection data={section} featuredProducts={featuredProducts} />;
+  }
+
+  // If we get here, the section type is not recognized
+  const sectionAny = section as any;
+  console.warn(`Unknown section type: ${sectionAny._type}`);
+  return null;
 } 

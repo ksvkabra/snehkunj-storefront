@@ -31,6 +31,7 @@ export default defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
+      validation: (Rule) => Rule.required(),
       hidden: ({ parent }) => parent?.sectionType !== 'hero',
     }),
     defineField({
@@ -41,16 +42,44 @@ export default defineType({
       hidden: ({ parent }) => parent?.sectionType !== 'hero',
     }),
     defineField({
-      name: 'backgroundImage',
-      title: 'Background Image',
+      name: 'description',
+      title: 'Description',
+      type: 'text',
+      rows: 3,
+      hidden: ({ parent }) => parent?.sectionType !== 'hero',
+    }),
+    defineField({
+      name: 'image',
+      title: 'Image',
       type: 'image',
       options: {
         hotspot: true,
       },
+      fields: [
+        {
+          name: 'alt',
+          title: 'Alt Text',
+          type: 'string',
+          description: 'Important for accessibility',
+        },
+      ],
       hidden: ({ parent }) => parent?.sectionType !== 'hero',
     }),
     defineField({
-      name: 'primaryCTA',
+      name: 'imagePosition',
+      title: 'Image Position',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Right', value: 'right' },
+          { title: 'Left', value: 'left' },
+        ],
+      },
+      initialValue: 'right',
+      hidden: ({ parent }) => parent?.sectionType !== 'hero',
+    }),
+    defineField({
+      name: 'primaryCta',
       title: 'Primary Call to Action',
       type: 'object',
       fields: [
@@ -60,7 +89,7 @@ export default defineType({
       hidden: ({ parent }) => parent?.sectionType !== 'hero',
     }),
     defineField({
-      name: 'secondaryCTA',
+      name: 'secondaryCta',
       title: 'Secondary Call to Action',
       type: 'object',
       fields: [
@@ -73,6 +102,7 @@ export default defineType({
       name: 'shippingBadge',
       title: 'Shipping Badge Text',
       type: 'string',
+      initialValue: 'Free Shipping Worldwide',
       hidden: ({ parent }) => parent?.sectionType !== 'hero',
     }),
 

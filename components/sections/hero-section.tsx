@@ -1,9 +1,9 @@
 'use client';
 
-import { urlForImage } from '@/sanity/lib/image';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
+import { urlFor } from '../../sanity/lib/image';
 
 interface HeroSectionProps {
   title: string;
@@ -53,7 +53,7 @@ export default function HeroSection({
       y: 0,
       transition: {
         duration: 0.6,
-        ease: "easeOut"
+        ease: "easeOut" as const
       }
     }
   };
@@ -65,7 +65,7 @@ export default function HeroSection({
       scale: 1,
       transition: {
         duration: 0.8,
-        ease: "easeOut"
+        ease: "easeOut" as const
       }
     }
   };
@@ -140,10 +140,10 @@ export default function HeroSection({
       viewport={{ once: true, margin: "-100px" }}
     >
       <Image
-        src={urlForImage(image.asset).url()}
+        src={urlFor(image.asset).url()}
         alt={image.alt || title}
         fill
-        className="image-cover hover-scale"
+        className="image-cover hover-scale rounded-2xl"
         priority
       />
     </motion.div>
