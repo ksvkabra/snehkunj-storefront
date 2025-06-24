@@ -23,6 +23,7 @@ export default defineType({
         current: 'home',
       },
       validation: (Rule) => Rule.required(),
+      readOnly: true,
     }),
     defineField({
       name: 'sections',

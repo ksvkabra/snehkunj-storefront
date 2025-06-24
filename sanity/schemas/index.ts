@@ -1,6 +1,7 @@
 import author from './author';
 import blockContent from './block-content';
 import category from './category';
+import header from './header';
 import menuCategory from './menu-category';
 import page from './page';
 import post from './post';
@@ -19,6 +20,7 @@ export const schemaTypes = [
   author,
   blockContent,
   category,
+  header,
   menuCategory,
   page,
   post,

@@ -1,5 +1,57 @@
 # Sanity Schema Overview - HoliCraft Storefront
 
+## Singleton Pattern Implementation
+
+### Overview
+The project now uses a **singleton pattern** for global content that should only have one instance:
+- **Header** (`header`) - Global site header configuration (styling, logo, search settings)
+- **Homepage** (`homePage`) - Main homepage content and sections
+- **Global Footer** (`globalFooter`) - Site-wide footer configuration
+
+### How Singletons Work
+1. **Single Instance**: Only one document of each type should exist
+2. **Latest First**: Queries use `order(_createdAt desc)[0]` to get the most recent document
+3. **Studio Integration**: Sanity Studio shows these as document lists (should only contain one item)
+4. **Automatic Creation**: Initialization script creates default documents if none exist
+
+### Singleton Documents
+
+| Document | Type | Purpose | Location in Studio |
+|----------|------|---------|-------------------|
+| `header` | `header` | Header styling, logo, search settings | Global Components > Header |
+| `homePage` | `homePage` | Homepage content and sections | Homepage |
+| `globalFooter` | `globalFooter` | Site-wide footer | Global Components > Footer |
+
+### Navigation Architecture
+
+The navigation system is properly separated:
+
+- **Header Configuration** (`header` singleton): Contains styling, logo, search settings, language selector, user account settings
+- **Menu Categories** (`menuCategory` documents): Contains the actual navigation menu items and structure
+- **Integration**: The navbar component fetches both separately and combines them
+
+### Benefits
+- **Consistency**: Ensures only one configuration exists per type
+- **Simplicity**: No need to manage multiple instances
+- **Performance**: Direct queries are fast
+- **User Experience**: Clear editing interface
+- **Separation of Concerns**: Header styling vs. menu content are managed separately
+
+### Initialization
+Run the initialization script to create singleton documents:
+```bash
+npm run sanity:init-singletons
+```
+
+This creates default configurations for all singletons if they don't exist.
+
+### Best Practices
+- **Only create one document** of each singleton type
+- **Use the initialization script** to set up defaults
+- **Delete extra documents** if multiple are accidentally created
+- **Backup before changes** to important singleton documents
+- **Keep header configuration separate** from menu categories
+
 ## Current Schema Structure
 
 ### Document Types (Main Schemas)

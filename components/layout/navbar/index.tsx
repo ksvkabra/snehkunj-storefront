@@ -1,12 +1,15 @@
 'use client';
+import { getHeader } from '@sanity/lib/services/header';
 import { debugAllDocuments, getMenuCategories } from '@sanity/lib/services/menu-category';
+import type { SanityHeader } from '@sanity/lib/types/header';
 import type { SanityMenuCategory } from '@sanity/lib/types/menu-category';
 import CartModal from 'components/cart/modal';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { ChevronDown, Globe, Heart, Menu, Search, User, X } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Suspense, useCallback, useEffect, useState } from 'react';
-import DesktopCategoryNav from './desktop-category-nav';
+import { Suspense, useCallback, useEffect, useRef, useState } from 'react';
+import MegaMenu from './mega-menu';
 import MobileMenu from './mobile-menu';
 
 export default function Navbar() {
@@ -14,33 +17,73 @@ export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchValue, setSearchValue] = useState('');
   const [menuCategories, setMenuCategories] = useState<SanityMenuCategory[]>([]);
+  const [headerConfig, setHeaderConfig] = useState<SanityHeader | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
   // Stub: replace with real auth logic
   const isLoggedIn = false;
 
+  // Scroll animation
+  const { scrollY } = useScroll();
+  const headerHeight = useTransform(scrollY, [0, 100], [80, 64]);
+  const headerPadding = useTransform(scrollY, [0, 100], [32, 16]);
+
   useEffect(() => {
-    const fetchCategories = async () => {
+    const fetchData = async () => {
       try {
         setIsLoading(true);
         // Debug: Check all documents first
         await debugAllDocuments();
         
-        const categories = await getMenuCategories();
+        // Fetch both categories and header config
+        const [categories, header] = await Promise.all([
+          getMenuCategories(),
+          getHeader()
+        ]);
         
         if (Array.isArray(categories) && categories.length > 0) {
           setMenuCategories(categories);
         } else {
           console.warn('No categories found or invalid response format');
         }
+
+        if (header) {
+          setHeaderConfig(header);
+        } else {
+          console.warn('No active header configuration found');
+        }
       } catch (error) {
-        console.error('Failed to fetch menu categories:', error);
+        console.error('Failed to fetch navigation data:', error);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchCategories();
+    fetchData();
+  }, []);
+
+  // Category navigation handlers
+  const getCategoryPath = (slug?: { current: string }) => {
+    return slug?.current ? `/category/${slug.current}` : '#';
+  };
+
+  const handleMouseEnter = (idx: number) => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setOpenIndex(idx);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setOpenIndex(null);
+    }, 200);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
   }, []);
 
   // Keyboard shortcut: ESC closes menu or search
@@ -63,20 +106,45 @@ export default function Navbar() {
     }
   };
 
+  // Fallback values if no header config exists
+  const logoText = headerConfig?.logo?.text || 'HOLICRAFT';
+  const logoLink = headerConfig?.logo?.link || '/';
+  const searchEnabled = headerConfig?.search?.enabled ?? true;
+  const searchPlaceholder = headerConfig?.search?.placeholder || 'Search brands, products, or categories';
+  const languageEnabled = headerConfig?.languageSelector?.enabled ?? true;
+  const defaultLanguage = headerConfig?.languageSelector?.defaultLanguage || 'EN-US';
+  const userAccountEnabled = headerConfig?.userAccount?.enabled ?? true;
+  const showWishlist = headerConfig?.userAccount?.showWishlist ?? true;
+  const backgroundColor = headerConfig?.styling?.backgroundColor || '#FFFFFF';
+  const textColor = headerConfig?.styling?.textColor || '#000000';
+  const hoverColor = headerConfig?.styling?.hoverColor || '#D29922';
+
   return (
-    <nav className='sticky top-0 z-50 w-full bg-white border-b' onKeyDown={handleKeyDown}>
+    <motion.nav 
+      className='sticky top-0 z-50 w-full border-b border-holicraft-gray-medium' 
+      onKeyDown={handleKeyDown}
+      style={{
+        height: headerHeight,
+        paddingTop: headerPadding,
+        backgroundColor,
+        color: textColor
+      }}
+      initial={{ y: -20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
       {/* Mobile/Tablet Header */}
-      <div className='flex h-14 items-center px-4 gap-2 md:hidden'>
+      <div className='flex h-16 items-center px-6 gap-2 md:hidden'>
         {/* Hamburger */}
         <button
           className='flex items-center justify-center w-10 h-10 cursor-pointer'
           onClick={() => setMenuOpen(true)}
           aria-label='Open menu'
         >
-          <Menu className='h-6 w-6 text-gray-900' />
+          <Menu className='icon-24' style={{ color: textColor }} />
         </button>
         {/* If search is open, show search bar inline */}
-        {searchOpen ? (
+        {searchOpen && searchEnabled ? (
           <form onSubmit={handleSearchSubmit} className='flex flex-1 items-center gap-2 ml-2'>
             <div className='relative w-full'>
               <input
@@ -84,8 +152,12 @@ export default function Navbar() {
                 type='text'
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
-                placeholder='Search brands, products, or categories'
-                className='w-full pl-4 pr-10 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900 text-base'
+                placeholder={searchPlaceholder}
+                className='w-full pl-4 pr-10 py-2 rounded-full border border-holicraft-gray-medium focus:outline-none focus:ring-2 text-base font-dm-sans'
+                style={{ 
+                  '--tw-ring-color': hoverColor,
+                  '--tw-ring-opacity': '1'
+                } as React.CSSProperties}
               />
               <button
                 type='button'
@@ -93,84 +165,142 @@ export default function Navbar() {
                 onClick={() => setSearchOpen(false)}
                 aria-label='Close search'
               >
-                <X className='h-5 w-5 text-gray-500' />
+                <X className='icon-24 text-holicraft-gray-dark' />
               </button>
             </div>
           </form>
         ) : (
           <>
             {/* Logo left-aligned, right after hamburger */}
-            <Link href='/' className='text-xl font-bold tracking-wide text-gray-900 ml-2'>
-              FAIRE
+            <Link href={logoLink} className='text-xl font-playfair font-semibold tracking-wide ml-2' style={{ color: textColor }}>
+              {logoText}
             </Link>
             {/* Spacer to push icons to right */}
             <div className='flex-1' />
             {/* Search and Cart icons */}
-            <button className='flex items-center justify-center w-10 h-10' onClick={() => setSearchOpen(true)} aria-label='Open search'>
-              <Search className='h-6 w-6 text-gray-900' />
-            </button>
+            {searchEnabled && (
+              <button className='flex items-center justify-center w-10 h-10' onClick={() => setSearchOpen(true)} aria-label='Open search'>
+                <Search className='icon-24 transition-colors' style={{ color: textColor }} />
+              </button>
+            )}
             <CartModal />
           </>
         )}
       </div>
 
       {/* Desktop Header Row 1 */}
-      <div className='hidden md:flex h-16 items-center justify-between px-6'>
+      <div className='hidden md:flex items-center justify-between px-16'>
         {/* Left: Logo */}
-        <Link href='/' className='text-2xl font-bold tracking-wide text-gray-900'>
-          FAIRE
+        <Link href={logoLink} className='text-2xl font-playfair font-semibold tracking-wide' style={{ color: textColor }}>
+          {logoText}
         </Link>
         {/* Center: Search Input */}
-        <form className='flex-1 flex justify-center px-8' onSubmit={handleSearchSubmit}>
-          <div className='relative w-full max-w-lg'>
-            <input
-              type='text'
-              value={searchValue}
-              onChange={(e) => setSearchValue(e.target.value)}
-              placeholder='Search brands, products, or categories'
-              className='w-full pl-12 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900 text-base'
-            />
-            <button type='submit' className='absolute left-4 top-1/2 -translate-y-1/2'>
-              <Search className='h-5 w-5 text-gray-400' />
-            </button>
-          </div>
-        </form>
+        {searchEnabled && (
+          <form className='flex-1 flex justify-center px-8' onSubmit={handleSearchSubmit}>
+            <div className='relative w-full max-w-lg'>
+              <input
+                type='text'
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                placeholder={searchPlaceholder}
+                className='w-full pl-12 pr-4 py-2 rounded-full border border-holicraft-gray-medium focus:outline-none focus:ring-2 text-base font-dm-sans'
+                style={{ 
+                  '--tw-ring-color': hoverColor,
+                  '--tw-ring-opacity': '1'
+                } as React.CSSProperties}
+              />
+              <button type='submit' className='absolute left-4 top-1/2 -translate-y-1/2'>
+                <Search className='icon-24 text-holicraft-gray-dark' />
+              </button>
+            </div>
+          </form>
+        )}
         {/* Right: Links/Icons */}
         <div className='flex items-center gap-4'>
           {/* Language Selector */}
-          <button className='flex items-center gap-1 text-gray-700 hover:text-gray-900'>
-            <Globe className='h-5 w-5' />
-            <span className='text-sm font-medium'>EN-US</span>
-            <ChevronDown className='h-4 w-4' />
-          </button>
-          <button className='flex items-center justify-center w-10 h-10'>
-            <Heart className='h-5 w-5 text-gray-700 hover:text-gray-900' />
-          </button>
+          {languageEnabled && (
+            <button className='flex items-center gap-1 transition-colors' style={{ color: textColor }}>
+              <Globe className='icon-24' />
+              <span className='text-sm font-dm-sans font-medium'>{defaultLanguage}</span>
+              <ChevronDown className='w-4 h-4' />
+            </button>
+          )}
+          {showWishlist && (
+            <button className='flex items-center justify-center w-10 h-10'>
+              <Heart className='icon-24 transition-colors' style={{ color: textColor }} />
+            </button>
+          )}
           <CartModal />
-          <button
-            className='flex items-center justify-center w-10 h-10'
-            onClick={() => {
-              if (isLoggedIn) {
-                window.location.href = '/account';
-              } else {
-                window.location.href = '/login';
-              }
-            }}
-            aria-label='User account'
-          >
-            <User className='h-5 w-5 text-gray-700 hover:text-gray-900' />
-          </button>
+          {userAccountEnabled && (
+            <button
+              className='flex items-center justify-center w-10 h-10'
+              onClick={() => {
+                if (isLoggedIn) {
+                  window.location.href = '/account';
+                } else {
+                  window.location.href = '/login';
+                }
+              }}
+              aria-label='User account'
+            >
+              <User className='icon-24 transition-colors' style={{ color: textColor }} />
+            </button>
+          )}
         </div>
       </div>
 
+      {/* Desktop Category Navigation */}
       {!isLoading && menuCategories.length > 0 && (
-        <>
-          <DesktopCategoryNav categories={menuCategories} />
-          <Suspense fallback={null}>
-            <MobileMenu open={menuOpen} setOpen={setMenuOpen} menu={menuCategories} />
-          </Suspense>
-        </>
+        <div
+          className='hidden md:block relative z-40'
+          style={{ backgroundColor }}
+          onMouseLeave={handleMouseLeave}
+          onMouseEnter={() => {
+            if (timeoutRef.current) clearTimeout(timeoutRef.current);
+          }}
+        >
+          <nav className='flex justify-center border-t border-b border-holicraft-gray-medium'>
+            <ul className='flex gap-6 text-sm px-16 py-2 mx-auto'>
+              {menuCategories?.map((cat, idx) => (
+                <li
+                  key={cat._id}
+                  className='relative'
+                  onMouseEnter={() => handleMouseEnter(idx)}
+                  onFocus={() => handleMouseEnter(idx)}
+                  tabIndex={0}
+                >
+                  <Link
+                    href={getCategoryPath(cat.slug)}
+                    className='px-1 py-1 hover:border-b-2 transition-colors whitespace-nowrap font-dm-sans font-medium'
+                    style={{ 
+                      color: textColor,
+                      borderColor: hoverColor
+                    }}
+                  >
+                    {cat.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* MegaMenu */}
+          <MegaMenu
+            isOpen={openIndex !== null}
+            categories={menuCategories}
+            activeIndex={openIndex}
+            onClose={() => setOpenIndex(null)}
+            onCategoryHover={handleMouseEnter}
+          />
+        </div>
       )}
-    </nav>
+
+      {/* Mobile Menu */}
+      {!isLoading && menuCategories.length > 0 && (
+        <Suspense fallback={null}>
+          <MobileMenu open={menuOpen} setOpen={setMenuOpen} menu={menuCategories} />
+        </Suspense>
+      )}
+    </motion.nav>
   );
 }
