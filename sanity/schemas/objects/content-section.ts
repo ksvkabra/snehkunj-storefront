@@ -156,8 +156,14 @@ export default defineType({
 
     // Testimonials Fields
     defineField({
-      name: 'testimonialsTitle',
+      name: 'title',
       title: 'Section Title',
+      type: 'string',
+      hidden: ({ parent }) => parent?.sectionType !== 'testimonials',
+    }),
+    defineField({
+      name: 'testimonialsTitle',
+      title: 'Section Title (Legacy)',
       type: 'string',
       hidden: ({ parent }) => parent?.sectionType !== 'testimonials',
     }),
@@ -168,17 +174,143 @@ export default defineType({
       of: [
         {
           type: 'object',
+          title: 'Testimonial Item',
           fields: [
-            { name: 'quote', title: 'Quote', type: 'text', rows: 3 },
-            { name: 'author', title: 'Author Name', type: 'string' },
-            { name: 'image', title: 'Author Image', type: 'image' },
-            { 
-              name: 'rating', 
-              title: 'Rating', 
+            {
+              name: 'type',
+              title: 'Testimonial Type',
+              type: 'string',
+              options: {
+                list: [
+                  { title: 'Text Quote', value: 'text' },
+                  { title: 'Video Testimonial', value: 'video' },
+                  { title: 'Product Review', value: 'product' },
+                  { title: 'Press Quote', value: 'press' },
+                ],
+              },
+              validation: (Rule) => Rule.required(),
+            },
+            // Text testimonial fields
+            {
+              name: 'quote',
+              title: 'Quote',
+              type: 'text',
+              rows: 3,
+              hidden: ({ parent }) => parent?.type !== 'text',
+            },
+            {
+              name: 'name',
+              title: 'Author Name',
+              type: 'string',
+              hidden: ({ parent }) => parent?.type !== 'text',
+            },
+            {
+              name: 'title',
+              title: 'Author Title/Position',
+              type: 'string',
+              hidden: ({ parent }) => parent?.type !== 'text',
+            },
+            // Video testimonial fields
+            {
+              name: 'media',
+              title: 'Video Thumbnail',
+              type: 'image',
+              options: {
+                hotspot: true,
+              },
+              fields: [
+                {
+                  name: 'alt',
+                  title: 'Alt Text',
+                  type: 'string',
+                },
+              ],
+              hidden: ({ parent }) => parent?.type !== 'video',
+            },
+            {
+              name: 'videoQuote',
+              title: 'Video Quote (optional)',
+              type: 'text',
+              rows: 2,
+              hidden: ({ parent }) => parent?.type !== 'video',
+            },
+            // Product review fields
+            {
+              name: 'product',
+              title: 'Product',
+              type: 'object',
+              fields: [
+                { name: 'title', title: 'Product Title', type: 'string' },
+                { name: 'handle', title: 'Product Handle', type: 'string' },
+              ],
+              hidden: ({ parent }) => parent?.type !== 'product',
+            },
+            {
+              name: 'ctaLabel',
+              title: 'CTA Label',
+              type: 'string',
+              hidden: ({ parent }) => parent?.type !== 'product',
+            },
+            {
+              name: 'ctaLink',
+              title: 'CTA Link',
+              type: 'string',
+              hidden: ({ parent }) => parent?.type !== 'product',
+            },
+            // Press quote fields
+            {
+              name: 'source',
+              title: 'Source/Publication',
+              type: 'string',
+              hidden: ({ parent }) => parent?.type !== 'press',
+            },
+            {
+              name: 'pressQuote',
+              title: 'Press Quote',
+              type: 'text',
+              rows: 3,
+              hidden: ({ parent }) => parent?.type !== 'press',
+            },
+            // Common fields for all types
+            {
+              name: 'rating',
+              title: 'Rating (1-5)',
               type: 'number',
               validation: (Rule) => Rule.min(1).max(5),
             },
+            {
+              name: 'image',
+              title: 'Author/Source Image',
+              type: 'image',
+              options: {
+                hotspot: true,
+              },
+              fields: [
+                {
+                  name: 'alt',
+                  title: 'Alt Text',
+                  type: 'string',
+                },
+              ],
+            },
           ],
+          preview: {
+            select: {
+              type: 'type',
+              quote: 'quote',
+              name: 'name',
+              source: 'source',
+              pressQuote: 'pressQuote',
+            },
+            prepare({ type, quote, name, source, pressQuote }) {
+              const displayText = quote || pressQuote || 'No quote';
+              const displayAuthor = name || source || 'Unknown';
+              return {
+                title: `${type.toUpperCase()}: ${displayText.substring(0, 50)}...`,
+                subtitle: `by ${displayAuthor}`,
+              };
+            },
+          },
         },
       ],
       hidden: ({ parent }) => parent?.sectionType !== 'testimonials',
@@ -291,7 +423,7 @@ export default defineType({
       const displayTitle = sectionName || 
         (sectionType === 'hero' ? title :
          sectionType === 'craftsmanship' ? craftsmanshipTitle :
-         sectionType === 'testimonials' ? testimonialsTitle :
+         sectionType === 'testimonials' ? title :
          sectionType === 'chat' ? 'Chat Prompt' : sectionType);
       
       return {

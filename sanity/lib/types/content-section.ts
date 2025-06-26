@@ -53,17 +53,41 @@ export interface SanityCraftsmanshipSection extends SanitySectionStyling {
 
 // Testimonials Section
 export interface SanityTestimonialItem {
-  quote: string;
-  author: string;
-  image?: SanityImageObject;
+  type: 'text' | 'video' | 'product' | 'press';
+  // Text testimonial fields
+  quote?: string;
+  name?: string;
+  title?: string;
+  // Video testimonial fields
+  media?: {
+    asset: SanityImageObject;
+    alt?: string;
+  };
+  videoQuote?: string;
+  // Product review fields
+  product?: {
+    title: string;
+    handle: string;
+  };
+  ctaLabel?: string;
+  ctaLink?: string;
+  // Press quote fields
+  source?: string;
+  pressQuote?: string;
+  // Common fields
   rating?: number;
+  image?: {
+    asset: SanityImageObject;
+    alt?: string;
+  };
 }
 
 export interface SanityTestimonialsSection extends SanitySectionStyling {
   _type: 'contentSection';
   sectionType: 'testimonials';
   sectionName?: string;
-  testimonialsTitle: string;
+  title: string;
+  testimonialsTitle?: string;
   testimonials: SanityTestimonialItem[];
 }
 
