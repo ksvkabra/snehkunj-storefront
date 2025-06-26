@@ -47,11 +47,13 @@ export function GridTileImage({
 
   const imageClasses = 'object-cover';
   const labelClasses = 'absolute bottom-0 left-0 flex w-full px-4 pb-4 @container';
-  const labelTextClasses = 'flex items-center rounded-full border bg-white/70 px-2 py-1 text-xs font-semibold text-black backdrop-blur-md dark:border-white/10 dark:bg-black/70 dark:text-white';
+  const labelTextClasses = 'flex items-center rounded-full border bg-white/70 px-2 py-1 text-xs font-semibold text-black backdrop-blur-md';
 
   return (
     <div
-      className={`group flex h-full w-full items-center justify-center overflow-hidden rounded-lg border bg-white hover:border-blue-600 dark:bg-black ${
+      className={`group flex h-full w-full items-center justify-center overflow-hidden rounded-lg border bg-white hover:border-blue-600 ${
+        background === 'black' ? 'text-white' : 'text-black'
+      } ${
         isInteractive ? 'cursor-pointer' : ''
       } ${backgroundClasses[background]}`}
     >
@@ -81,7 +83,7 @@ export function GridTileImage({
             <div className={`${labelClasses} ${label.position === 'center' ? 'justify-center' : 'justify-between'}`}>
               <div className={`${labelTextClasses} flex items-center gap-2`}>
                 <span>{label.title}</span>
-                <span className="ml-auto text-xs font-medium text-black/60 dark:text-white/60">
+                <span className="ml-auto text-xs font-medium text-black/60">
                   {label.amount}
                 </span>
               </div>

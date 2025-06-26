@@ -131,7 +131,7 @@ export default function HeroSection({
     </motion.div>
   );
 
-  const imageContent = image && (
+  const imageContent = image && image.asset && (
     <motion.div 
       className="relative aspect-[4/5] lg:aspect-square"
       variants={imageVariants}

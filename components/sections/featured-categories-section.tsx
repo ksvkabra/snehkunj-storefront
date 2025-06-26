@@ -101,7 +101,7 @@ function CategoryCard({
   showCount: boolean;
   aspectRatio: 'square' | 'landscape' | 'portrait';
 }) {
-  const imageUrl = urlFor(category.image).url();
+  const imageUrl = category.image ? urlFor(category.image).url() : null;
   
   // Aspect ratio classes based on design specs
   const getAspectRatioClass = () => {
@@ -118,11 +118,17 @@ function CategoryCard({
       <div className={`relative overflow-hidden w-full rounded-xl shadow-md transition-all duration-300 group-hover:scale-[1.03] hover:shadow-lg ${getAspectRatioClass()}`}>
         {/* Image with hover effects */}
         <div className='absolute inset-0 z-0 transition-transform duration-300 group-hover:scale-105'>
-          <img 
-            src={imageUrl} 
-            alt={category.label} 
-            className='object-cover w-full h-full' 
-          />
+          {imageUrl ? (
+            <img 
+              src={imageUrl} 
+              alt={category.label} 
+              className='object-cover w-full h-full' 
+            />
+          ) : (
+            <div className='flex items-center justify-center w-full h-full bg-gray-200'>
+              <span className='text-gray-500 text-sm'>No image</span>
+            </div>
+          )}
           {/* Overlay on hover */}
           <div className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300' />
         </div>

@@ -46,7 +46,13 @@ export default defineType({
       options: {
         hotspot: true,
       },
-      validation: (Rule) => Rule.required(),
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          if ((context?.parent as any)?.sectionType === 'background' && !value) {
+            return 'Background image is required for Background section';
+          }
+          return true;
+        }),
       hidden: ({ parent }) => parent?.sectionType !== 'background',
     }),
     defineField({
@@ -96,7 +102,11 @@ export default defineType({
               options: {
                 hotspot: true,
               },
-              validation: (Rule) => Rule.required(),
+              validation: (Rule) =>
+                Rule.custom((value) => {
+                  if (!value) return 'Image is required';
+                  return true;
+                }),
             },
             {
               name: 'alt',
@@ -123,7 +133,15 @@ export default defineType({
           },
         },
       ],
-      validation: (Rule) => Rule.required().min(1),
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          if ((context?.parent as any)?.sectionType === 'gallery') {
+            if (!value || value.length < 1) {
+              return 'At least one image is required for gallery';
+            }
+          }
+          return true;
+        }),
       hidden: ({ parent }) => parent?.sectionType !== 'gallery',
     }),
     defineField({
@@ -177,12 +195,19 @@ export default defineType({
               options: {
                 hotspot: true,
               },
-              validation: (Rule) => Rule.required(),
-            },
-            {
-              name: 'alt',
-              title: 'Alt Text',
-              type: 'string',
+              fields: [
+                {
+                  name: 'alt',
+                  title: 'Alt Text',
+                  type: 'string',
+                  description: 'Important for accessibility',
+                },
+              ],
+              validation: (Rule) =>
+                Rule.custom((value) => {
+                  if (!value) return 'Image is required';
+                  return true;
+                }),
             },
             {
               name: 'title',
@@ -210,7 +235,15 @@ export default defineType({
           },
         },
       ],
-      validation: (Rule) => Rule.required().min(1),
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          if ((context?.parent as any)?.sectionType === 'social-proof') {
+            if (!value || value.length < 1) {
+              return 'At least one image is required for Social Proof section';
+            }
+          }
+          return true;
+        }),
       hidden: ({ parent }) => parent?.sectionType !== 'social-proof',
     }),
     defineField({
@@ -303,15 +336,20 @@ export default defineType({
       socialProofTitle: 'socialProofTitle',
     },
     prepare({ sectionType, sectionName, backgroundTitle, galleryTitle, socialProofTitle }) {
-      const displayTitle = sectionName || 
-        (sectionType === 'background' ? backgroundTitle :
-         sectionType === 'gallery' ? galleryTitle :
-         sectionType === 'social-proof' ? socialProofTitle : sectionType);
-      
+      const displayTitle =
+        sectionName ||
+        (sectionType === 'background'
+          ? backgroundTitle
+          : sectionType === 'gallery'
+            ? galleryTitle
+            : sectionType === 'social-proof'
+              ? socialProofTitle
+              : sectionType);
+
       return {
         title: displayTitle || `Image Section (${sectionType})`,
         subtitle: `Type: ${sectionType}`,
       };
     },
   },
-}); 
+});

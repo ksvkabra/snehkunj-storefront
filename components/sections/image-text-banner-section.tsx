@@ -10,7 +10,7 @@ interface ImageTextBannerSectionProps {
 }
 
 export default function ImageTextBannerSection({ data }: ImageTextBannerSectionProps) {
-  const imageUrl = urlFor(data.image).url();
+  const imageUrl = data.image ? urlFor(data.image).url() : null;
 
   return (
     <section className='w-full bg-black min-h-[500px]' aria-labelledby='banner-heading'>
@@ -41,19 +41,21 @@ export default function ImageTextBannerSection({ data }: ImageTextBannerSectionP
         </motion.div>
 
         {/* Right: Full-cover Image */}
-        <motion.div
-          className='relative h-[400px] md:h-auto w-screen md:w-[50vw]'
-          initial={{ opacity: 0, x: 40 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: 'easeOut', delay: 0.1 }}
-        >
-          <img
-            src={imageUrl}
-            alt={data.image.alt || data.headline}
-            className='absolute inset-0 w-full h-full object-cover rounded-l-xl md:rounded-none'
-          />
-        </motion.div>
+        {imageUrl && (
+          <motion.div
+            className='relative h-[400px] md:h-auto w-screen md:w-[50vw]'
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: 'easeOut', delay: 0.1 }}
+          >
+            <img
+              src={imageUrl}
+              alt={data.image?.alt || data.headline}
+              className='absolute inset-0 w-full h-full object-cover rounded-l-xl md:rounded-none'
+            />
+          </motion.div>
+        )}
       </div>
     </section>
   );

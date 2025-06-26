@@ -1,3 +1,4 @@
+import { sanityAdminClient } from '../admin-client';
 import { sanityClient } from '../client';
 
 /**
@@ -60,34 +61,88 @@ export async function getHomePage() {
       _type,
       _key,
       sectionType,
-      // Content Section
-      title,
-      content,
-      alignment,
-      backgroundColor,
-      textColor,
-      // Image Section
+      sectionName,
+      
+      // Hero Section Fields
+      heroTitle,
+      subheading,
+      description,
       image,
-      altText,
-      caption,
       imagePosition,
-      // Product Section
-      heading,
-      productCount,
-      collectionHandle,
-      showViewAll,
-      // Category Section
+      primaryCta,
+      secondaryCta,
+      shippingBadge,
+      
+      // Craftsmanship Section Fields
+      craftsmanshipTitle,
+      craftsmanshipBody,
+      craftsmanshipImage,
+      craftsmanshipImagePosition,
+      craftsmanshipCTA,
+      
+      // Testimonials Section Fields
+      testimonialsTitle,
+      testimonials,
+      
+      // Chat Section Fields
+      chatTextBlock,
+      highlightedInstruction,
+      
+      // Category Section Fields
+      title,
       categories[] {
         _key,
-        title,
+        label,
         description,
         image,
+        link,
+        productCount,
+        featured
+      },
+      gridColumns,
+      gridGap,
+      showCategoryCounts,
+      showCategoryDescriptions,
+      imageAspectRatio,
+      
+      // Product Section Fields
+      sectionTitle,
+      productSourceType,
+      shopifyCollection,
+      productLimit,
+      showProductImages,
+      showProductPrices,
+      showProductTitles,
+      showAddToCart,
+      
+      // Image Section Fields
+      altText,
+      caption,
+      backgroundColor,
+      textColor,
+      showCaption,
+      
+      // Social Proof Section Fields
+      socialProofTitle,
+      socialProofImages[] {
+        _key,
+        image,
+        alt,
+        title,
+        description,
         link
       },
-      // Layout Section
+      
+      // Layout Section Fields
       columns,
       gap,
-      // Shopify Section
+      alignment,
+      containerMaxWidth,
+      containerPadding,
+      containerCentered,
+      containerContent,
+      
+      // Shopify Section Fields
       shopifyType,
       shopifyData
     },
@@ -250,7 +305,7 @@ export async function initializeSingletons() {
       );
 
       if (!existing) {
-        await sanityClient.create(singleton);
+        await sanityAdminClient.create(singleton);
         console.log(`Created ${singleton._type} singleton`);
       } else {
         console.log(`${singleton._type} singleton already exists`);

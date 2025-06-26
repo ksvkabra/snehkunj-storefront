@@ -48,7 +48,7 @@ export default function Search() {
         autoComplete='off'
         defaultValue={searchParams?.get('q') || ''}
         onChange={(e) => handleSearch(e.target.value)}
-        className='w-full px-4 py-2 text-black bg-white border rounded-lg text-md placeholder:text-neutral-500 md:text-sm dark:border-neutral-800 dark:bg-transparent dark:text-white dark:placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+        className='w-full px-4 py-2 text-black bg-white border rounded-lg text-md placeholder:text-neutral-500 md:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
         disabled={isPending}
       />
       <div className='absolute top-0 right-0 flex items-center h-full mr-3'>

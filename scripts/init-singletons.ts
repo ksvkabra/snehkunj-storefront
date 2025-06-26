@@ -5,7 +5,11 @@
  * Run this script after setting up your Sanity project
  */
 
+import dotenv from 'dotenv';
 import { initializeSingletons } from '../sanity/lib/services/singletons';
+
+// Load environment variables from .env.local
+dotenv.config({ path: '.env.local' });
 
 async function main() {
   console.log('🚀 Initializing Sanity singletons...');

@@ -25,14 +25,20 @@ export default defineType({
       type: 'string',
       description: 'Optional name to identify this section in the studio',
     }),
-    
+
     // Hero Section Fields
     defineField({
       name: 'heroTitle',
       title: 'Title',
       type: 'string',
-      validation: (Rule) => Rule.required(),
       hidden: ({ parent }) => parent?.sectionType !== 'hero',
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          if ((context?.parent as any)?.sectionType === 'hero' && !value) {
+            return 'Title is required for Hero section';
+          }
+          return true;
+        }),
     }),
     defineField({
       name: 'subheading',
@@ -112,6 +118,13 @@ export default defineType({
       title: 'Title',
       type: 'string',
       hidden: ({ parent }) => parent?.sectionType !== 'craftsmanship',
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          if ((context?.parent as any)?.sectionType === 'craftsmanship' && !value) {
+            return 'Title is required for Craftsmanship section';
+          }
+          return true;
+        }),
     }),
     defineField({
       name: 'craftsmanshipBody',
@@ -138,7 +151,7 @@ export default defineType({
           { title: 'Left', value: 'left' },
           { title: 'Right', value: 'right' },
         ],
-        layout: 'radio'
+        layout: 'radio',
       },
       initialValue: 'right',
       hidden: ({ parent }) => parent?.sectionType !== 'craftsmanship',
@@ -160,6 +173,13 @@ export default defineType({
       title: 'Section Title',
       type: 'string',
       hidden: ({ parent }) => parent?.sectionType !== 'testimonials',
+      validation: (Rule) =>
+        Rule.custom((value, context) => {
+          if ((context?.parent as any)?.sectionType === 'testimonials' && !value) {
+            return 'Title is required for Testimonials section';
+          }
+          return true;
+        }),
     }),
     defineField({
       name: 'testimonials',
@@ -195,6 +215,12 @@ export default defineType({
             {
               name: 'name',
               title: 'Author Name',
+              type: 'string',
+              hidden: ({ parent }) => parent?.type !== 'text',
+            },
+            {
+              name: 'source',
+              title: 'Source/Position',
               type: 'string',
               hidden: ({ parent }) => parent?.type !== 'text',
             },
@@ -253,7 +279,7 @@ export default defineType({
             },
             // Press quote fields
             {
-              name: 'source',
+              name: 'publication',
               title: 'Source/Publication',
               type: 'string',
               hidden: ({ parent }) => parent?.type !== 'press',
@@ -294,11 +320,12 @@ export default defineType({
               quote: 'quote',
               name: 'name',
               source: 'source',
+              publication: 'publication',
               pressQuote: 'pressQuote',
             },
-            prepare({ type, quote, name, source, pressQuote }) {
+            prepare({ type, quote, name, source, publication, pressQuote }) {
               const displayText = quote || pressQuote || 'No quote';
-              const displayAuthor = name || source || 'Unknown';
+              const displayAuthor = name || source || publication || 'Unknown';
               return {
                 title: `${type.toUpperCase()}: ${displayText.substring(0, 50)}...`,
                 subtitle: `by ${displayAuthor}`,
@@ -414,16 +441,22 @@ export default defineType({
       testimonialsTitle: 'testimonialsTitle',
     },
     prepare({ sectionType, sectionName, heroTitle, craftsmanshipTitle, testimonialsTitle }) {
-      const displayTitle = sectionName || 
-        (sectionType === 'hero' ? heroTitle :
-         sectionType === 'craftsmanship' ? craftsmanshipTitle :
-         sectionType === 'testimonials' ? testimonialsTitle :
-         sectionType === 'chat' ? 'Chat Prompt' : sectionType);
-      
+      const displayTitle =
+        sectionName ||
+        (sectionType === 'hero'
+          ? heroTitle
+          : sectionType === 'craftsmanship'
+            ? craftsmanshipTitle
+            : sectionType === 'testimonials'
+              ? testimonialsTitle
+              : sectionType === 'chat'
+                ? 'Chat Prompt'
+                : sectionType);
+
       return {
         title: displayTitle || `Content Section (${sectionType})`,
         subtitle: `Type: ${sectionType}`,
       };
     },
   },
-}); 
+});

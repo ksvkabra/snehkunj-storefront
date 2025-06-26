@@ -60,6 +60,14 @@ export default defineType({
               options: {
                 hotspot: true,
               },
+              fields: [
+                {
+                  name: 'alt',
+                  title: 'Alt Text',
+                  type: 'string',
+                  description: 'Important for accessibility',
+                },
+              ],
               validation: (Rule) => Rule.required(),
             },
             {

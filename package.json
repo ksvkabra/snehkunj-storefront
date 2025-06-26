@@ -10,7 +10,9 @@
     "sanity:deploy": "sanity deploy",
     "sanity:start": "sanity start",
     "sanity:build": "sanity build",
-    "sanity:init-singletons": "tsx scripts/init-singletons.ts"
+    "sanity:init-singletons": "tsx scripts/init-singletons.ts",
+    "sanity:seed-dummy-data": "tsx scripts/seed-dummy-data.ts",
+    "sanity:setup-env": "tsx scripts/setup-env.ts"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.0",
@@ -20,6 +22,7 @@
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.95.0",
     "clsx": "^2.1.1",
+    "dotenv": "^16.5.0",
     "framer-motion": "^12.19.1",
     "geist": "^1.3.1",
     "keen-slider": "^6.8.6",

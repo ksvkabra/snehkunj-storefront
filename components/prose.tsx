@@ -10,7 +10,7 @@ export default function Prose({
   return (
     <div
       className={clsx(
-        'prose prose-neutral dark:prose-invert',
+        'prose prose-neutral',
         className
       )}
       dangerouslySetInnerHTML={{ __html: html }}

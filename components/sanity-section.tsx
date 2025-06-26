@@ -8,6 +8,7 @@ import FeaturedCategoriesSection from './sections/featured-categories-section';
 import HeroSection from './sections/hero-section';
 import ImageTextBannerSection from './sections/image-text-banner-section';
 import ProductCarouselSection from './sections/product-carousel-section';
+import ProductGridSection from './sections/product-grid-section';
 import ShopifySection from './sections/shopify-section';
 import SocialProofSection from './sections/social-proof-section';
 import TestimonialsSection from './sections/testimonials-section';
@@ -80,10 +81,10 @@ export default function SanitySection({ section, featuredProducts }: SanitySecti
     const productSection = section as any;
     switch (productSection.sectionType) {
       case 'carousel':
+      case 'featured':
         return <ProductCarouselSection data={productSection} featuredProducts={featuredProducts} />;
       case 'grid':
-      case 'featured':
-        return <FeaturedCategoriesSection data={productSection} />;
+        return <ProductGridSection data={productSection} featuredProducts={featuredProducts} />;
       default:
         console.warn(`Unknown product section type: ${productSection.sectionType}`);
         return null;

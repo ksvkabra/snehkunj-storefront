@@ -50,7 +50,7 @@ export default function FooterClient({ footer }: FooterClientProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="border-t border-neutral-200 bg-white dark:border-neutral-800 dark:bg-black"
+        className="border-t border-neutral-200 bg-white"
       >
         <div className="mx-auto max-w-7xl px-6 py-12 md:flex md:items-center md:justify-between lg:px-8">
           <div className="flex justify-center space-x-6 md:order-2">
@@ -77,10 +77,10 @@ export default function FooterClient({ footer }: FooterClientProps) {
   } = footer;
 
   // Apply styling from Sanity
-  const bgColor = styling.backgroundColor || 'bg-gray-900';
-  const textColor = styling.textColor || 'text-white';
-  const linkColor = styling.linkColor || 'text-blue-400';
-  const hoverColor = styling.hoverColor || 'hover:text-blue-300';
+  const bgColor = styling?.backgroundColor || 'bg-gray-900';
+  const textColor = styling?.textColor || 'text-white';
+  const linkColor = styling?.linkColor || 'text-blue-400';
+  const hoverColor = styling?.hoverColor || 'hover:text-blue-300';
 
   return (
     <motion.footer 
