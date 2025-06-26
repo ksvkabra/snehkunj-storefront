@@ -33,30 +33,50 @@ export default function Navbar() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        console.log('🔄 Navbar: Starting to fetch navigation data...');
         setIsLoading(true);
+        
         // Debug: Check all documents first
+        console.log('🔄 Navbar: Debugging all documents...');
         await debugAllDocuments();
+        console.log('✅ Navbar: Debug documents completed');
         
         // Fetch both categories and header config
+        console.log('🔄 Navbar: Fetching menu categories and header config...');
         const [categories, header] = await Promise.all([
           getMenuCategories(),
           getHeader()
         ]);
         
+        console.log('📊 Navbar: Categories response:', categories);
+        console.log('📊 Navbar: Header response:', header);
+        
         if (Array.isArray(categories) && categories.length > 0) {
+          console.log(`✅ Navbar: Successfully loaded ${categories.length} menu categories`);
           setMenuCategories(categories);
         } else {
-          console.warn('No categories found or invalid response format');
+          console.warn('⚠️ Navbar: No categories found or invalid response format');
+          console.log('📊 Navbar: Categories data:', categories);
         }
 
         if (header) {
+          console.log('✅ Navbar: Successfully loaded header configuration');
           setHeaderConfig(header);
         } else {
-          console.warn('No active header configuration found');
+          console.warn('⚠️ Navbar: No active header configuration found');
         }
       } catch (error) {
-        console.error('Failed to fetch navigation data:', error);
+        console.error('❌ Navbar: Failed to fetch navigation data:', error);
+        console.error('❌ Navbar: Error details:', {
+          message: error instanceof Error ? error.message : 'Unknown error',
+          stack: error instanceof Error ? error.stack : undefined,
+          cause: error instanceof Error ? error.cause : undefined
+        });
+        // Set default values when API is unavailable
+        setMenuCategories([]);
+        setHeaderConfig(null);
       } finally {
+        console.log('🏁 Navbar: Navigation data fetch completed');
         setIsLoading(false);
       }
     };

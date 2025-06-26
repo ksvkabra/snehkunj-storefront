@@ -25,7 +25,7 @@ export default function SanitySection({ section, featuredProducts }: SanitySecti
       case 'hero':
         return (
           <HeroSection
-            title={contentSection.title}
+            title={contentSection.heroTitle}
             subtitle={contentSection.subheading}
             description={contentSection.description}
             image={contentSection.image}

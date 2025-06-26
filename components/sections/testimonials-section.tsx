@@ -15,7 +15,7 @@ export default function TestimonialsSection({ data }: TestimonialsSectionProps) 
   if (!data.testimonials?.length) return null;
 
   const {
-    title,
+    testimonialsTitle,
     testimonials,
     backgroundColor = 'bg-holicraft-cream',
     textColor = 'text-holicraft-brown',
@@ -40,7 +40,7 @@ export default function TestimonialsSection({ data }: TestimonialsSectionProps) 
             textAlign === 'center' ? 'text-center' : ''
           }`}
         >
-          {title}
+          {testimonialsTitle}
         </h2>
 
         <div className='columns-1 md:columns-2 gap-6 space-y-6'>

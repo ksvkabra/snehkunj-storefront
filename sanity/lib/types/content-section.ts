@@ -17,7 +17,7 @@ export interface SanityHeroSection extends SanitySectionStyling {
   _type: 'contentSection';
   sectionType: 'hero';
   sectionName?: string;
-  title: string;
+  heroTitle: string;
   subheading?: string;
   description?: string;
   image?: {
@@ -86,8 +86,7 @@ export interface SanityTestimonialsSection extends SanitySectionStyling {
   _type: 'contentSection';
   sectionType: 'testimonials';
   sectionName?: string;
-  title: string;
-  testimonialsTitle?: string;
+  testimonialsTitle: string;
   testimonials: SanityTestimonialItem[];
 }
 

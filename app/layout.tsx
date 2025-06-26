@@ -23,8 +23,21 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
+  console.log('🔄 Layout: Starting to fetch cart data...');
+  
   // Don't await the fetch, pass the Promise to the context provider
-  const cart = getCart();
+  // Add error handling to prevent crashes when Shopify API is unavailable
+  const cart = getCart().catch((error) => {
+    console.error('❌ Layout: Failed to fetch cart:', error);
+    console.error('❌ Layout: Cart error details:', {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined,
+      cause: error instanceof Error ? error.cause : undefined
+    });
+    return undefined;
+  });
+
+  console.log('✅ Layout: Cart promise created successfully');
 
   return (
     <html lang='en' className={GeistSans.variable}>

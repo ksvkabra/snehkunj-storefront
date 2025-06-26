@@ -28,7 +28,7 @@ export default defineType({
     
     // Hero Section Fields
     defineField({
-      name: 'title',
+      name: 'heroTitle',
       title: 'Title',
       type: 'string',
       validation: (Rule) => Rule.required(),
@@ -156,14 +156,8 @@ export default defineType({
 
     // Testimonials Fields
     defineField({
-      name: 'title',
-      title: 'Section Title',
-      type: 'string',
-      hidden: ({ parent }) => parent?.sectionType !== 'testimonials',
-    }),
-    defineField({
       name: 'testimonialsTitle',
-      title: 'Section Title (Legacy)',
+      title: 'Section Title',
       type: 'string',
       hidden: ({ parent }) => parent?.sectionType !== 'testimonials',
     }),
@@ -415,15 +409,15 @@ export default defineType({
     select: {
       sectionType: 'sectionType',
       sectionName: 'sectionName',
-      title: 'title',
+      heroTitle: 'heroTitle',
       craftsmanshipTitle: 'craftsmanshipTitle',
       testimonialsTitle: 'testimonialsTitle',
     },
-    prepare({ sectionType, sectionName, title, craftsmanshipTitle, testimonialsTitle }) {
+    prepare({ sectionType, sectionName, heroTitle, craftsmanshipTitle, testimonialsTitle }) {
       const displayTitle = sectionName || 
-        (sectionType === 'hero' ? title :
+        (sectionType === 'hero' ? heroTitle :
          sectionType === 'craftsmanship' ? craftsmanshipTitle :
-         sectionType === 'testimonials' ? title :
+         sectionType === 'testimonials' ? testimonialsTitle :
          sectionType === 'chat' ? 'Chat Prompt' : sectionType);
       
       return {
