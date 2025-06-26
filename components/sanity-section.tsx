@@ -2,6 +2,7 @@
 
 import { Product } from '../lib/shopify/types';
 import type { SanitySection } from '../sanity/lib/types/page';
+import ChatPromptSection from './sections/chat-prompt-section';
 import CraftsmanshipSection from './sections/craftsmanship-section';
 import FeaturedCategoriesSection from './sections/featured-categories-section';
 import HeroSection from './sections/hero-section';
@@ -37,6 +38,8 @@ export default function SanitySection({ section, featuredProducts }: SanitySecti
         return <CraftsmanshipSection data={contentSection} />;
       case 'testimonials':
         return <TestimonialsSection data={contentSection} />;
+      case 'chat':
+        return <ChatPromptSection data={contentSection} />;
       default:
         console.warn(`Unknown content section type: ${contentSection.sectionType}`);
         return null;
