@@ -17,71 +17,51 @@ export default function FeaturedCategoriesSection({ data }: FeaturedCategoriesSe
   if (!data.categories?.length) return null;
 
   // Get grid configuration from data
-  const gridColumns = data.gridColumns || 3;
+  const gridColumns = data.gridColumns || 4; // Default to 4 columns for full-width
   const gridGap = data.gridGap || 'gap-4';
-  const showDescriptions = data.showCategoryDescriptions ?? true;
-  const showCounts = data.showCategoryCounts ?? true;
 
-  // Responsive grid classes based on design specs
+  // Full-width editorial grid classes - Cuyana-inspired
   const getGridClasses = () => {
     const baseClasses = 'grid';
-    const gapClass = gridGap;
+    const gapClass = 'gap-1 md:gap-2'; // Minimal gap for editorial feel
     
-    // Mobile: 2 columns, Tablet: 3 columns, Desktop: 4 columns (as per design)
-    const responsiveClasses = 'grid-cols-2 md:grid-cols-3 xl:grid-cols-4';
+    // Mobile: 1 column, Tablet: 2 columns, Desktop: 4 columns
+    const responsiveClasses = 'grid-cols-1 md:grid-cols-2 xl:grid-cols-4';
     
     return `${baseClasses} ${gapClass} ${responsiveClasses}`;
   };
 
   return (
-    <section 
-      className={`w-full py-16 md:py-24 ${data.backgroundColor || 'bg-transparent'}`} 
-      aria-labelledby='categories-heading' 
-      ref={ref}
-    >
+    <section className={`w-full py-16 md:py-24 ${data.backgroundColor || 'bg-transparent'}`} aria-labelledby='categories-heading' ref={ref}>
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 24 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className='px-4 mx-auto max-w-7xl sm:px-6 lg:px-8'
+        className='w-full px-4 md:px-6 lg:px-8'
       >
-        {/* Header */}
-        <div className={`flex items-center justify-between mb-12 ${data.textAlign === 'center' ? 'flex-col space-y-4' : ''}`}>
-          <h2 
-            id='categories-heading' 
-            className={`text-3xl font-bold tracking-tight sm:text-4xl ${
-              data.textColor || 'text-holicraft-brown'
-            } ${data.textAlign === 'center' ? 'text-center' : ''}`}
-          >
-            {data.title}
-          </h2>
-          {data.cta && (
-            <Link 
-              href={data.cta.link} 
-              className={`text-sm font-semibold underline-offset-4 hover:underline ${
-                data.textColor || 'text-holicraft-brown'
-              }`}
+        {/* Optional Header - Only show if title exists */}
+        {data.title && (
+          <div className={`mb-12 max-w-6xl mx-auto ${data.textAlign === 'center' ? 'text-center' : ''}`}>
+            <h2
+              id='categories-heading'
+              className={`text-2xl font-light tracking-wide sm:text-3xl ${data.textColor || 'text-holicraft-brown'}`}
             >
-              {data.cta.text}
-            </Link>
-          )}
-        </div>
+              {data.title}
+            </h2>
+          </div>
+        )}
 
-        {/* Category Cards Grid */}
+        {/* Full-Width Editorial Category Grid */}
         <div className={getGridClasses()}>
           {data.categories?.map((category, index) => (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 40 }}
+              initial={{ opacity: 0, y: 24 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.2 + index * 0.1, duration: 0.6, ease: 'easeOut' }}
+              transition={{ delay: 0.1 + index * 0.1, duration: 0.5, ease: 'easeOut' }}
+              className='relative overflow-hidden'
             >
-              <CategoryCard 
-                category={category} 
-                showDescription={showDescriptions}
-                showCount={showCounts}
-                aspectRatio={data.imageAspectRatio || 'square'}
-              />
+              <CategoryTile category={category} aspectRatio={data.imageAspectRatio || 'square'} />
             </motion.div>
           ))}
         </div>
@@ -90,72 +70,50 @@ export default function FeaturedCategoriesSection({ data }: FeaturedCategoriesSe
   );
 }
 
-function CategoryCard({ 
-  category, 
-  showDescription, 
-  showCount, 
-  aspectRatio 
-}: { 
+function CategoryTile({
+  category,
+  aspectRatio,
+}: {
   category: SanityFeaturedCategoriesSection['categories'][0];
-  showDescription: boolean;
-  showCount: boolean;
   aspectRatio: 'square' | 'landscape' | 'portrait';
 }) {
   const imageUrl = category.image ? urlFor(category.image).url() : null;
   
-  // Aspect ratio classes based on design specs
+  // Editorial aspect ratios - optimized for full-width grid
   const getAspectRatioClass = () => {
     switch (aspectRatio) {
-      case 'square': return 'aspect-square';
-      case 'landscape': return 'aspect-[16/9]';
-      case 'portrait': return 'aspect-[4/5]';
-      default: return 'aspect-square';
+      case 'square':
+        return 'aspect-square';
+      case 'landscape':
+        return 'aspect-[4/3]';
+      case 'portrait':
+        return 'aspect-[3/4]';
+      default:
+        return 'aspect-square';
     }
   };
 
   return (
     <Link href={category.link} className='block group'>
-      <div className={`relative overflow-hidden w-full rounded-xl shadow-md transition-all duration-300 group-hover:scale-[1.03] hover:shadow-lg ${getAspectRatioClass()}`}>
-        {/* Image with hover effects */}
-        <div className='absolute inset-0 z-0 transition-transform duration-300 group-hover:scale-105'>
-          {imageUrl ? (
-            <img 
-              src={imageUrl} 
-              alt={category.label} 
-              className='object-cover w-full h-full' 
-            />
-          ) : (
-            <div className='flex items-center justify-center w-full h-full bg-gray-200'>
-              <span className='text-gray-500 text-sm'>No image</span>
-            </div>
-          )}
-          {/* Overlay on hover */}
-          <div className='absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300' />
-        </div>
-
-        {/* Text Content */}
-        <div className='absolute bottom-0 left-0 right-0 z-10 p-4 text-white'>
-          <div className='transition-transform duration-300 group-hover:translate-y-[-4px]'>
-            <h3 className='mb-1 text-lg font-semibold drop-shadow-md md:text-xl'>
-              {category.label}
-            </h3>
-            
-            {showDescription && category.description && (
-              <p className='mb-2 text-sm text-white/90 drop-shadow-md line-clamp-2'>
-                {category.description}
-              </p>
-            )}
-            
-            {showCount && category.productCount && (
-              <p className='mb-3 text-xs text-white/80 drop-shadow-md'>
-                {category.productCount} products
-              </p>
-            )}
-            
-            <span className='inline-block px-3 py-1.5 text-xs font-medium text-white transition-all duration-300 rounded-full bg-white/10 backdrop-blur-sm group-hover:bg-white/20 group-hover:scale-105'>
-              Shop now
-            </span>
+      <div className={`relative overflow-hidden w-full ${getAspectRatioClass()}`}>
+        {/* Full-bleed image - no borders, no shadows */}
+        {imageUrl ? (
+          <img 
+            src={imageUrl} 
+            alt={category.label} 
+            className='object-cover w-full h-full transition-transform duration-500 group-hover:scale-[1.02]' 
+          />
+        ) : (
+          <div className='flex items-center justify-center w-full h-full bg-gray-100'>
+            <span className='text-gray-400 text-sm font-light'>No image</span>
           </div>
+        )}
+
+        {/* Minimal text overlay - bottom-left corner only */}
+        <div className='absolute bottom-4 left-4 z-10'>
+          <h3 className='text-sm md:text-base font-medium text-white drop-shadow-sm tracking-wide'>
+            {category.label}
+          </h3>
         </div>
       </div>
     </Link>

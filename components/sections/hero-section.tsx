@@ -25,37 +25,28 @@ interface HeroSectionProps {
   imagePosition?: 'left' | 'right';
 }
 
-export default function HeroSection({
-  title,
-  subtitle,
-  description,
-  primaryCta,
-  secondaryCta,
-  image,
-  shippingBadge = "Free Shipping Worldwide",
-  imagePosition = 'right'
-}: HeroSectionProps) {
+export default function HeroSection({ title, subtitle, description, primaryCta, secondaryCta, image }: HeroSectionProps) {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
         duration: 0.6,
-        staggerChildren: 0.2
-      }
-    }
+        staggerChildren: 0.2,
+      },
+    },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 30 },
+    hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.6,
-        ease: "easeOut" as const
-      }
-    }
+        duration: 0.5,
+        ease: 'easeOut' as const,
+      },
+    },
   };
 
   const imageVariants = {
@@ -65,109 +56,131 @@ export default function HeroSection({
       scale: 1,
       transition: {
         duration: 0.8,
-        ease: "easeOut" as const
-      }
-    }
+        ease: 'easeOut' as const,
+      },
+    },
   };
 
-  const textContent = (
-    <motion.div 
-      className="flex flex-col justify-center space-y-6 lg:space-y-8"
-      variants={containerVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
-    >
-      {subtitle && (
-        <motion.p 
-          className="body-md text-holicraft-terracotta font-semibold uppercase tracking-wider"
-          variants={itemVariants}
+  return (
+    <section className='relative bg-holicraft-cream'>
+      {/* Hero Background Image - Full Bleed */}
+      {image && (
+        <motion.div
+          className='relative w-full h-[500px] md:h-[600px] lg:h-[80vh] xl:h-[85vh]'
+          variants={imageVariants}
+          initial='hidden'
+          whileInView='visible'
+          viewport={{ once: true, margin: '-100px' }}
         >
-          {subtitle}
-        </motion.p>
-      )}
-      
-      <motion.h1 
-        className="heading-xl"
-        variants={itemVariants}
-      >
-        {title}
-      </motion.h1>
-      
-      {description && (
-        <motion.p 
-          className="body-lg text-holicraft-gray-dark max-w-lg"
-          variants={itemVariants}
-        >
-          {description}
-        </motion.p>
-      )}
-      
-      <motion.div 
-        className="flex flex-col sm:flex-row gap-4"
-        variants={itemVariants}
-      >
-        {primaryCta && (
-          <Link href={primaryCta.link} className="btn-primary">
-            {primaryCta.text}
-          </Link>
-        )}
-        {secondaryCta && (
-          <Link href={secondaryCta.link} className="btn-secondary">
-            {secondaryCta.text}
-          </Link>
-        )}
-      </motion.div>
-      
-      {shippingBadge && (
-        <motion.div 
-          className="flex items-center gap-2 pt-4"
-          variants={itemVariants}
-        >
-          <div className="w-2 h-2 bg-holicraft-terracotta rounded-full"></div>
-          <span className="body-sm text-holicraft-gray-dark">{shippingBadge}</span>
+          <Image src={urlFor(image.asset).url()} alt={image.alt || title} fill className='object-cover' priority />
+
+          {/* Dark overlay for text readability */}
+          <div className='absolute inset-0 bg-black/20'></div>
         </motion.div>
       )}
-    </motion.div>
-  );
 
-  const imageContent = image && image.asset && (
-    <motion.div 
-      className="relative aspect-[4/5] lg:aspect-square"
-      variants={imageVariants}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
-    >
-      <Image
-        src={urlFor(image.asset).url()}
-        alt={image.alt || title}
-        fill
-        className="image-cover hover-scale rounded-2xl"
-        priority
-      />
-    </motion.div>
-  );
-
-  return (
-    <section className="section-padding bg-holicraft-cream">
-      <div className="container-holicraft">
-        <div className={`grid lg:grid-cols-2 gap-8 lg:gap-12 items-center ${
-          imagePosition === 'left' ? 'lg:grid-flow-col-dense' : ''
-        }`}>
-          {imagePosition === 'left' ? (
-            <>
-              {imageContent}
-              {textContent}
-            </>
-          ) : (
-            <>
-              {textContent}
-              {imageContent}
-            </>
+      {/* Text Content - Centered Overlay */}
+      <motion.div
+        className='absolute inset-0 flex items-center justify-center z-10'
+        variants={containerVariants}
+        initial='hidden'
+        whileInView='visible'
+        viewport={{ once: true, margin: '-100px' }}
+      >
+        <div className='text-center max-w-4xl mx-auto px-6 lg:px-8 space-y-6 lg:space-y-8'>
+          {/* Subtitle/Tagline */}
+          {subtitle && (
+            <motion.p className='text-sm lg:text-base font-medium text-white uppercase tracking-wider' variants={itemVariants}>
+              {subtitle}
+            </motion.p>
           )}
+
+          {/* Main Title */}
+          <motion.h1
+            className='text-3xl lg:text-4xl xl:text-5xl font-playfair font-semibold text-white leading-tight'
+            variants={itemVariants}
+          >
+            {title}
+          </motion.h1>
+
+          {/* Description */}
+          {description && (
+            <motion.p className='text-base lg:text-lg text-white/90 max-w-2xl mx-auto leading-relaxed' variants={itemVariants}>
+              {description}
+            </motion.p>
+          )}
+
+          {/* CTAs */}
+          <motion.div className='flex flex-col sm:flex-row gap-4 justify-center' variants={itemVariants}>
+            {primaryCta && (
+              <Link href={primaryCta.link} className='btn-primary text-center hover:scale-105 transition-transform duration-200'>
+                {primaryCta.text}
+              </Link>
+            )}
+            {secondaryCta && (
+              <Link
+                href={secondaryCta.link}
+                className='btn-secondary text-center hover:scale-105 transition-transform duration-200'
+                style={{
+                  backgroundColor: 'transparent',
+                  borderColor: 'white',
+                  color: 'white',
+                }}
+              >
+                {secondaryCta.text}
+              </Link>
+            )}
+          </motion.div>
         </div>
-      </div>
+      </motion.div>
+
+      {/* Fallback for when no image is provided */}
+      {!image && (
+        <div className='h-[500px] md:h-[600px] lg:h-[80vh] xl:h-[85vh] flex items-center justify-center'>
+          <motion.div
+            className='text-center max-w-4xl mx-auto px-6 lg:px-8 space-y-6 lg:space-y-8'
+            variants={containerVariants}
+            initial='hidden'
+            whileInView='visible'
+            viewport={{ once: true, margin: '-100px' }}
+          >
+            {subtitle && (
+              <motion.p
+                className='text-sm lg:text-base font-medium text-holicraft-terracotta uppercase tracking-wider'
+                variants={itemVariants}
+              >
+                {subtitle}
+              </motion.p>
+            )}
+
+            <motion.h1
+              className='text-3xl lg:text-4xl xl:text-5xl font-playfair font-semibold text-holicraft-black leading-tight'
+              variants={itemVariants}
+            >
+              {title}
+            </motion.h1>
+
+            {description && (
+              <motion.p className='text-base lg:text-lg text-holicraft-gray-dark max-w-2xl mx-auto leading-relaxed' variants={itemVariants}>
+                {description}
+              </motion.p>
+            )}
+
+            <motion.div className='flex flex-col sm:flex-row gap-4 justify-center' variants={itemVariants}>
+              {primaryCta && (
+                <Link href={primaryCta.link} className='btn-primary text-center hover:scale-105 transition-transform duration-200'>
+                  {primaryCta.text}
+                </Link>
+              )}
+              {secondaryCta && (
+                <Link href={secondaryCta.link} className='btn-secondary text-center hover:scale-105 transition-transform duration-200'>
+                  {secondaryCta.text}
+                </Link>
+              )}
+            </motion.div>
+          </motion.div>
+        </div>
+      )}
     </section>
   );
-} 
+}
