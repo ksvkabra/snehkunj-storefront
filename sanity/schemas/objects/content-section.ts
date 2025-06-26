@@ -130,6 +130,20 @@ export default defineType({
       hidden: ({ parent }) => parent?.sectionType !== 'craftsmanship',
     }),
     defineField({
+      name: 'craftsmanshipImagePosition',
+      title: 'Image Position',
+      type: 'string',
+      options: {
+        list: [
+          { title: 'Left', value: 'left' },
+          { title: 'Right', value: 'right' },
+        ],
+        layout: 'radio'
+      },
+      initialValue: 'right',
+      hidden: ({ parent }) => parent?.sectionType !== 'craftsmanship',
+    }),
+    defineField({
       name: 'craftsmanshipCTA',
       title: 'Call to Action',
       type: 'object',

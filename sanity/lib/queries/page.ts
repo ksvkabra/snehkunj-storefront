@@ -21,6 +21,7 @@ export const pageQuery = groq`
       craftsmanshipTitle,
       craftsmanshipBody,
       craftsmanshipImage,
+      craftsmanshipImagePosition,
       craftsmanshipCTA,
       testimonialsTitle,
       testimonials,

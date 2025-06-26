@@ -44,6 +44,7 @@ export interface SanityCraftsmanshipSection extends SanitySectionStyling {
   craftsmanshipTitle: string;
   craftsmanshipBody?: any[]; // PortableText
   craftsmanshipImage?: SanityImageObject;
+  craftsmanshipImagePosition?: 'left' | 'right';
   craftsmanshipCTA?: {
     text: string;
     link: string;

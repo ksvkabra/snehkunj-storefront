@@ -2,9 +2,11 @@
 
 import { Product } from '../lib/shopify/types';
 import type { SanitySection } from '../sanity/lib/types/page';
+import CraftsmanshipSection from './sections/craftsmanship-section';
 import FeaturedCategoriesSection from './sections/featured-categories-section';
 import HeroSection from './sections/hero-section';
 import ImageTextBannerSection from './sections/image-text-banner-section';
+import ProductCarouselSection from './sections/product-carousel-section';
 import ShopifySection from './sections/shopify-section';
 import TestimonialsSection from './sections/testimonials-section';
 
@@ -31,6 +33,8 @@ export default function SanitySection({ section, featuredProducts }: SanitySecti
             shippingBadge={contentSection.shippingBadge}
           />
         );
+      case 'craftsmanship':
+        return <CraftsmanshipSection data={contentSection} />;
       case 'testimonials':
         return <TestimonialsSection data={contentSection} />;
       default:
@@ -66,6 +70,7 @@ export default function SanitySection({ section, featuredProducts }: SanitySecti
     const productSection = section as any;
     switch (productSection.sectionType) {
       case 'carousel':
+        return <ProductCarouselSection data={productSection} featuredProducts={featuredProducts} />;
       case 'grid':
       case 'featured':
         return <FeaturedCategoriesSection data={productSection} />;
@@ -77,7 +82,16 @@ export default function SanitySection({ section, featuredProducts }: SanitySecti
 
   // Handle category sections
   if (section._type === 'categorySection') {
-    return <FeaturedCategoriesSection data={section} />;
+    const categorySection = section as any;
+    if (categorySection.sectionType === 'featured-grid') {
+      return <FeaturedCategoriesSection data={categorySection} />;
+    } else if (categorySection.sectionType === 'navigation') {
+      // For now, use the same component but we could create a dedicated navigation component later
+      return <FeaturedCategoriesSection data={categorySection} />;
+    } else {
+      console.warn(`Unknown category section type: ${categorySection.sectionType}`);
+      return null;
+    }
   }
 
   // Handle layout sections
