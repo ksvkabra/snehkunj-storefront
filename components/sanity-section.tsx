@@ -9,6 +9,7 @@ import HeroSection from './sections/hero-section';
 import ImageTextBannerSection from './sections/image-text-banner-section';
 import ProductCarouselSection from './sections/product-carousel-section';
 import ShopifySection from './sections/shopify-section';
+import SocialProofSection from './sections/social-proof-section';
 import TestimonialsSection from './sections/testimonials-section';
 
 interface SanitySectionProps {
@@ -62,6 +63,8 @@ export default function SanitySection({ section, featuredProducts }: SanitySecti
             }}
           />
         );
+      case 'social-proof':
+        return <SocialProofSection data={imageSection} />;
       default:
         console.warn(`Unknown image section type: ${imageSection.sectionType}`);
         return null;
