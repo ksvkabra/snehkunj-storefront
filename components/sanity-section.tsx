@@ -55,14 +55,18 @@ export default function SanitySection({ section, featuredProducts }: SanitySecti
         return (
           <ImageTextBannerSection
             data={{
-              title: imageSection.backgroundTitle || '',
-              subtitle: imageSection.backgroundSubtitle || '',
+              _type: 'imageSection',
+              sectionType: 'image-text-banner',
+              headline: imageSection.backgroundTitle || '',
+              text: imageSection.backgroundSubtitle || '',
               image: imageSection.backgroundImage,
-              cta: imageSection.backgroundCTA,
-              overlay: imageSection.backgroundOverlay,
+              ctaLabel: imageSection.backgroundCTA?.text,
+              ctaLink: imageSection.backgroundCTA?.link,
             }}
           />
         );
+      case 'image-text-banner':
+        return <ImageTextBannerSection data={imageSection} />;
       case 'social-proof':
         return <SocialProofSection data={imageSection} />;
       default:

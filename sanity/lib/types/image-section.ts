@@ -26,6 +26,21 @@ export interface SanityBackgroundImageSection extends SanitySectionStyling {
   };
 }
 
+// Image Text Banner Section
+export interface SanityImageTextBannerSection extends SanitySectionStyling {
+  _type: 'imageSection';
+  sectionType: 'image-text-banner';
+  sectionName?: string;
+  headline: string;
+  text?: string;
+  image: {
+    asset: SanityImageObject;
+    alt?: string;
+  };
+  ctaLabel?: string;
+  ctaLink?: string;
+}
+
 // Gallery Image Item
 export interface SanityGalleryImageItem {
   image: SanityImageObject;
@@ -68,5 +83,6 @@ export interface SanitySocialProofSection extends SanitySectionStyling {
 // Union type for all image sections
 export type SanityImageSection = 
   | SanityBackgroundImageSection
+  | SanityImageTextBannerSection
   | SanityImageGallerySection
   | SanitySocialProofSection; 

@@ -13,13 +13,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Get IP address - Next.js 15 doesn't have request.ip
+    const forwarded = request.headers.get('x-forwarded-for');
+    const ip = forwarded ? forwarded.split(',')[0] : request.headers.get('x-real-ip') || 'unknown';
+
     // Log the analytics event
     console.log('Analytics Event:', {
       event: event.event,
       properties: event.properties,
       timestamp: new Date(event.timestamp).toISOString(),
       userAgent: request.headers.get('user-agent'),
-      ip: request.headers.get('x-forwarded-for') || request.ip,
+      ip: ip,
     });
 
     // Here you would typically:

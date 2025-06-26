@@ -9,18 +9,12 @@ interface ShopifySectionProps {
 }
 
 export default function ShopifySection({ data, featuredProducts }: ShopifySectionProps) {
-  if (data.sectionId) {
-    return (
-      <Suspense fallback={<div className='w-full h-32 animate-pulse bg-holicraft-cream/20' />}>
-        {featuredProducts.length > 0 && (
-          <FeaturedCollectionSection title='Featured Collection' products={featuredProducts} collectionHandle='featured' />
-        )}
-      </Suspense>
-    );
-  }
   return (
     <Suspense fallback={<div className='w-full h-32 animate-pulse bg-holicraft-cream/20' />}>
-      <div data-shopify-section={data.sectionName} data-section-id={data.sectionId} />
+      {featuredProducts.length > 0 && (
+        <FeaturedCollectionSection title='Featured Collection' products={featuredProducts} collectionHandle='featured' />
+      )}
+      <div data-shopify-section={data.sectionName} />
     </Suspense>
   );
 }

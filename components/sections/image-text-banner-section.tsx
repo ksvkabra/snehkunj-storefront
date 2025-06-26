@@ -1,7 +1,7 @@
 'use client';
 
 import { urlFor } from '@sanity/lib/image';
-import type { SanityImageTextBannerSection } from '@sanity/lib/types/image-text-banner-section';
+import type { SanityImageTextBannerSection } from '@sanity/lib/types/image-section';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 

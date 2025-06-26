@@ -7,13 +7,13 @@ const nextConfig = {
     },
     // Enable optimized package imports
     optimizePackageImports: ['@heroicons/react', 'lucide-react'],
-    // Enable turbo for faster builds
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  },
+  // Enable turbopack (moved from experimental.turbo)
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
     },
   },
@@ -37,8 +37,6 @@ const nextConfig = {
   },
   // Enable static generation where possible
   trailingSlash: false,
-  // Optimize bundle size
-  swcMinify: true,
   // Enable compression
   compress: true,
   // Enable HTTP/2 Server Push

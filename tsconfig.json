@@ -10,7 +10,7 @@
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
@@ -18,6 +18,9 @@
     "baseUrl": ".",
     "paths": {
       "@sanity/*": ["sanity/*"],
+      "lib/*": ["lib/*"],
+      "components/*": ["components/*"],
+      "hooks/*": ["hooks/*"]
     },
     "noUncheckedIndexedAccess": true,
     "plugins": [
