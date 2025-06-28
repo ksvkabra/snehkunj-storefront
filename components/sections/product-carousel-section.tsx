@@ -1,38 +1,28 @@
 'use client';
 
-import type { SanityProductCarouselSection } from '@sanity/lib/types/product-section';
 import { motion, useInView } from 'framer-motion';
 import 'keen-slider/keen-slider.min.css';
 import { useKeenSlider } from 'keen-slider/react';
-import type { Product } from 'lib/shopify/types';
+import { Product } from 'lib/shopify/types';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import { useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { useProductCarousel } from '../../hooks/use-product-carousel';
-import ProductCard from '../grid/product-card';
-import Section from '../section';
+import { SanityProductSection } from '../../sanity/lib/types/product-section';
 
 interface ProductCarouselSectionProps {
-  data: SanityProductCarouselSection;
+  data: SanityProductSection;
   featuredProducts: Product[];
 }
 
 export default function ProductCarouselSection({ data, featuredProducts }: ProductCarouselSectionProps) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.3 });
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [maxSlide, setMaxSlide] = useState(0);
 
-  // Use the product carousel hook
   const { products, loading, error } = useProductCarousel({ data, featuredProducts });
 
-  // Carousel configuration from Sanity data
-  const carouselConfig = {
-    autoplay: data.carouselAutoplay || false,
-    speed: data.carouselSpeed || 5,
-    showArrows: data.carouselShowArrows ?? true,
-    showDots: data.carouselShowDots ?? true,
-  };
+  const isGridLayout = data.sectionType === 'grid';
+  const gridColumns = isGridLayout ? (data as any).gridColumns || 4 : 4;
 
   const [sliderRef, slider] = useKeenSlider<HTMLDivElement>(
     {
@@ -40,222 +30,182 @@ export default function ProductCarouselSection({ data, featuredProducts }: Produ
       mode: 'snap',
       slides: {
         perView: 1.2,
-        spacing: 16,
+        spacing: 6,
       },
       breakpoints: {
         '(min-width: 640px)': {
-          slides: { perView: 2.2, spacing: 16 },
+          slides: { perView: 2.2, spacing: 6 },
         },
         '(min-width: 1024px)': {
-          slides: { perView: 3, spacing: 16 },
+          slides: { perView: 3, spacing: 6 },
         },
         '(min-width: 1280px)': {
-          slides: { perView: 4, spacing: 16 },
+          slides: { perView: 4, spacing: 6 },
         },
-      },
-      created(s) {
-        let perViewValue = 1;
-        const slidesOption = s.options.slides;
-        if (typeof slidesOption === 'object' && slidesOption !== null && 'perView' in slidesOption) {
-          const rawPerView = slidesOption.perView;
-          if (typeof rawPerView === 'number') {
-            perViewValue = rawPerView;
-          } else if (typeof rawPerView === 'function') {
-            const result = rawPerView();
-            if (typeof result === 'number') {
-              perViewValue = result;
-            }
-          }
-        }
-        setMaxSlide(s.track.details.slides.length - perViewValue);
-      },
-      slideChanged(s) {
-        let perViewValue = 1;
-        const slidesOption = s.options.slides;
-        if (typeof slidesOption === 'object' && slidesOption !== null && 'perView' in slidesOption) {
-          const rawPerView = slidesOption.perView;
-          if (typeof rawPerView === 'number') {
-            perViewValue = rawPerView;
-          } else if (typeof rawPerView === 'function') {
-            const result = rawPerView();
-            if (typeof result === 'number') {
-              perViewValue = result;
-            }
-          }
-        }
-        setCurrentSlide(s.track.details.rel);
-        setMaxSlide(s.track.details.slides.length - perViewValue);
       },
     },
     []
   );
 
-  // Show loading state
-  if (loading) {
-    return (
-      <div ref={ref}>
-        <Section className={`${data.backgroundColor || 'bg-transparent'} ${data.paddingTop || 'pt-16'} ${data.paddingBottom || 'pb-16'}`}>
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2 mb-8"></div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="h-64 bg-gray-200 rounded"></div>
-              ))}
-            </div>
-          </div>
-        </Section>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (slider && products.length > 0) {
+      setTimeout(() => slider.current?.update(), 150);
+    }
+  }, [slider, products]);
 
-  // Show error state
-  if (error) {
+  if (loading)
     return (
-      <div ref={ref}>
-        <Section className={`${data.backgroundColor || 'bg-transparent'} ${data.paddingTop || 'pt-16'} ${data.paddingBottom || 'pb-16'}`}>
-          <div className="text-center text-red-600">
-            <p>Failed to load products: {error}</p>
-          </div>
-        </Section>
-      </div>
+      <SectionShell ref={ref} data={data}>
+        Loading...
+      </SectionShell>
     );
-  }
-
-  // Show empty state
-  if (!products?.length) {
-    return null;
-  }
+  if (error)
+    return (
+      <SectionShell ref={ref} data={data}>
+        Error: {error}
+      </SectionShell>
+    );
+  if (!products?.length) return null;
 
   return (
-    <div ref={ref}>
-      <Section 
-        className={`${data.backgroundColor || 'bg-transparent'} ${data.paddingTop || 'pt-16'} ${data.paddingBottom || 'pb-16'}`}
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.4 }}
-        >
-          {/* Section Header */}
-          <div className={`flex items-center justify-between mb-12 ${data.textAlign === 'center' ? 'flex-col space-y-4' : ''}`}>
-            <div className={`${data.textAlign === 'center' ? 'text-center' : ''}`}>
-              <h2 
-                className={`font-playfair text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl ${
-                  data.textColor || 'text-holicraft-brown'
-                } ${data.textAlign === 'center' ? 'text-center' : ''}`}
-              >
-                {data.sectionTitle}
-              </h2>
-              {data.description && (
-                <p className={`mt-4 text-base font-dm-sans text-gray-600 max-w-2xl ${
-                  data.textAlign === 'center' ? 'mx-auto' : ''
-                }`}>
-                  {data.description}
-                </p>
-              )}
-            </div>
-            
-            {data.cta && (
-              <Link 
-                href={data.cta.link} 
-                className={`inline-flex items-center px-6 py-3 text-sm font-semibold transition-colors rounded-full ${
-                  data.cta.style === 'primary' 
-                    ? 'bg-holicraft-mustard text-holicraft-brown hover:bg-holicraft-hover' 
-                    : data.cta.style === 'secondary'
-                    ? 'bg-holicraft-brown text-white hover:bg-holicraft-dark'
-                    : 'border-2 border-holicraft-mustard text-holicraft-brown hover:bg-holicraft-mustard hover:text-white'
-                }`}
-              >
-                {data.cta.text}
-              </Link>
-            )}
+    <SectionShell ref={ref} data={data}>
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.4 }}>
+        {/* Section Header */}
+        <div className='flex items-center justify-between mb-12'>
+          <div>
+            <h2 className={`text-5xl md:text-6xl font-bold tracking-tight ${data.textColor || 'text-gray-900'}`}>{data.sectionTitle}</h2>
+            {data.description && <p className='text-gray-500 mt-2 font-dm-sans text-base'>{data.description}</p>}
           </div>
+          {data.cta && (
+            <Link
+              href={data.cta.link}
+              className='inline-flex items-center px-5 py-2 text-sm font-semibold border border-gray-200 rounded-full shadow-sm bg-white hover:bg-gray-50 transition-colors whitespace-nowrap'
+            >
+              {data.cta.text}
+            </Link>
+          )}
+        </div>
 
-          {/* Carousel Container */}
-          <div className='relative'>
-            {/* Navigation Arrows */}
-            {carouselConfig.showArrows && slider && (
-              <>
-                <motion.button
-                  onClick={() => slider.current?.prev()}
-                  disabled={currentSlide === 0}
-                  className={`absolute z-10 items-center justify-center hidden w-12 h-12 transition-all duration-300 -translate-y-1/2 border rounded-full shadow-lg cursor-pointer left-[-32px] top-1/2 md:flex ${
-                    currentSlide === 0
-                      ? 'opacity-30 cursor-not-allowed'
-                      : 'bg-white border-holicraft-mustard text-holicraft-brown hover:bg-holicraft-mustard hover:text-white hover:scale-110'
-                  }`}
-                  aria-label='Previous products'
-                  whileHover={{ scale: currentSlide === 0 ? 1 : 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <ChevronLeft className='w-5 h-5' />
-                </motion.button>
-                <motion.button
-                  onClick={() => slider.current?.next()}
-                  disabled={currentSlide >= maxSlide}
-                  className={`absolute z-10 items-center justify-center hidden w-12 h-12 transition-all duration-300 -translate-y-1/2 border rounded-full shadow-lg cursor-pointer right-[-32px] top-1/2 md:flex ${
-                    currentSlide >= maxSlide
-                      ? 'opacity-30 cursor-not-allowed'
-                      : 'bg-white border-holicraft-mustard text-holicraft-brown hover:bg-holicraft-mustard hover:text-white hover:scale-110'
-                  }`}
-                  aria-label='Next products'
-                  whileHover={{ scale: currentSlide >= maxSlide ? 1 : 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <ChevronRight className='w-5 h-5' />
-                </motion.button>
-              </>
-            )}
-
-            {/* Product Carousel */}
-            <div ref={sliderRef} className='keen-slider'>
+        {isGridLayout ? (
+          <div className={`grid gap-6 ${getGridColumnsClass(gridColumns)}`}>
+            {products.map((product, index) => (
+              <motion.div key={product.handle} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.05 * index }}>
+                <ProductCard product={product} />
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className='relative flex items-center'>
+            {/* Arrows */}
+            <CarouselArrow direction='left' onClick={() => slider.current?.prev()} />
+            <CarouselArrow direction='right' onClick={() => slider.current?.next()} />
+            {/* Carousel */}
+            <div ref={sliderRef} className='keen-slider w-full'>
               {products.map((product, index) => (
-                <motion.div 
-                  key={product.handle} 
+                <motion.div
+                  key={product.handle}
                   className='keen-slider__slide'
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: 0.1 * index, duration: 0.4 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.05 * index }}
                 >
-                  <Link href={`/product/${product.handle}`}>
-                    <motion.div 
-                      className='w-full h-full p-2'
-                      whileHover={{ scale: 1.02 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <ProductCard
-                        title={product.title}
-                        imageSrc={product.featuredImage.url}
-                        price={`$${product.priceRange.maxVariantPrice.amount}`}
-                        href={`/product/${product.handle}`}
-                      />
-                    </motion.div>
-                  </Link>
+                  <ProductCard product={product} />
                 </motion.div>
               ))}
             </div>
-
-            {/* Dot Indicators */}
-            {carouselConfig.showDots && slider && (
-              <div className='flex justify-center mt-8 space-x-2'>
-                {Array.from({ length: maxSlide + 1 }, (_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => slider.current?.moveToIdx(i)}
-                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                      currentSlide === i 
-                        ? 'bg-holicraft-mustard scale-125' 
-                        : 'bg-gray-300 hover:bg-gray-400'
-                    }`}
-                    aria-label={`Go to slide ${i + 1}`}
-                  />
-                ))}
-              </div>
-            )}
           </div>
-        </motion.div>
-      </Section>
+        )}
+      </motion.div>
+    </SectionShell>
+  );
+}
+
+// 🧱 Section container (padding, background)
+const SectionShell = ({ children, data, ...props }: any) => (
+  <div
+    ref={props.ref}
+    className={`w-full ${data.backgroundColor || 'bg-white'} ${data.paddingTop || 'pt-16'} ${data.paddingBottom || 'pb-16'}`}
+  >
+    <div className='px-4 md:px-8 lg:px-16'>{children}</div>
+  </div>
+);
+
+// 🛍 Product Card (hover-safe)
+function ProductCard({ product }: { product: Product }) {
+  return (
+    <div className='relative bg-[#f9f9f9] rounded-md overflow-hidden w-full group cursor-pointer'>
+      {/* Product Image */}
+      <div className='relative aspect-[3/4] w-full overflow-hidden'>
+        <img
+          src={product.featuredImage.url}
+          alt={product.title}
+          className='w-full h-full object-cover transition-transform duration-300 group-hover:scale-105'
+        />
+        {product.images[1]?.url && (
+          <img
+            src={product.images[1].url}
+            alt={`${product.title} alt`}
+            className='absolute inset-0 w-full h-full object-cover opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none'
+          />
+        )}
+        {(product.tags?.includes('bestseller') || product.tags?.includes('new')) && (
+          <div className='absolute top-3 right-3 bg-white text-[10px] uppercase font-medium px-2 py-1 z-10'>
+            {product.tags.includes('bestseller') ? 'BEST SELLER' : 'NEW SHADE'}
+          </div>
+        )}
+      </div>
+
+      {/* Product Info */}
+      <div className='p-4 space-y-1'>
+        <h3 className='text-base font-semibold text-gray-900'>{product.title}</h3>
+        {product.description && <p className='text-sm text-gray-500 line-clamp-2'>{product.description}</p>}
+        <p className='text-sm font-medium text-black'>${product.priceRange.maxVariantPrice.amount}</p>
+      </div>
+
+      {/* Add to Cart Button (only appears on hover) */}
+      <div className='absolute bottom-6 left-1/2 -translate-x-1/2 w-[80%] opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity duration-300 z-30'>
+        <button
+          className='w-full py-3 rounded-full border-2 font-semibold text-base hover:text-white transition-all duration-200 keen-slider__slide__add-to-cart-button'
+          style={{ backgroundColor: 'transparent' }}
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = 'var(--holicraft-terracotta)')}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'white')}
+        >
+          Add to Cart
+        </button>
+      </div>
     </div>
   );
-} 
+}
+
+// ⬅️➡️ Arrows
+function CarouselArrow({ direction, onClick }: { direction: 'left' | 'right'; onClick: () => void }) {
+  const isLeft = direction === 'left';
+  const Icon = isLeft ? ChevronLeft : ChevronRight;
+  return (
+    <button
+      onClick={onClick}
+      className={`absolute z-10 flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full bg-white border border-gray-200 shadow-md transition-all duration-200 hover:shadow-lg hover:scale-110 -translate-y-1/2 top-1/2 ${
+        isLeft ? 'left-[-32px]' : 'right-[-32px]'
+      }`}
+      aria-label={isLeft ? 'Previous products' : 'Next products'}
+    >
+      <Icon className='w-6 h-6 text-holicraft-terracotta' />
+    </button>
+  );
+}
+
+// 🧮 Grid column helper
+function getGridColumnsClass(columns: number): string {
+  switch (columns) {
+    case 2:
+      return 'grid-cols-1 md:grid-cols-2';
+    case 3:
+      return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3';
+    case 4:
+      return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+    case 5:
+      return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5';
+    default:
+      return 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4';
+  }
+}

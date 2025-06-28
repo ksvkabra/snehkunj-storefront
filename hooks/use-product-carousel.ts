@@ -1,9 +1,9 @@
-import type { SanityProductCarouselSection } from '@sanity/lib/types/product-section';
+import type { SanityProductSection } from '@sanity/lib/types/product-section';
 import type { Product } from 'lib/shopify/types';
 import { useEffect, useState } from 'react';
 
 interface UseProductCarouselProps {
-  data: SanityProductCarouselSection;
+  data: SanityProductSection;
   featuredProducts: Product[];
 }
 
