@@ -100,8 +100,4 @@ export interface SanityChatSection extends SanitySectionStyling {
 }
 
 // Union type for all content sections
-export type SanityContentSection = 
-  | SanityHeroSection
-  | SanityCraftsmanshipSection
-  | SanityTestimonialsSection
-  | SanityChatSection; 
+export type SanityContentSection = SanityHeroSection | SanityCraftsmanshipSection | SanityTestimonialsSection | SanityChatSection;
